@@ -1,1 +1,0 @@
-BoseManufacturingTool.exe -h --print_response
