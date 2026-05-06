@@ -2,3 +2,10 @@ pyinstaller
 PySide6
 pyserial
 watchdog
+pyzmq
+gevent
+numpy
+requests
+pyvisa
+six
+pylink-square
