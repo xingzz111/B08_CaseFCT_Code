@@ -1,5 +1,0 @@
-.DS_Store
-*.pyc
-dist
-build
-**/__pycache__/
