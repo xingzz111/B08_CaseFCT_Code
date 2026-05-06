@@ -1,0 +1,43 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,Info,Vendor_ID,common.vendor_id,,,5000,,OSSNS,OSSNS,,,,
+,Fixture,Info,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+,DUT_POWER_ON,POWER_ON,POWER_ON,common.powerOn,,,5000,,,,,,,
+
+
+,VOLT_TEST,VOLT_TEST,CONNECT_DMM_VIN1_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['DMM_VIN1_SEL_SW']}",,5000,,,,,,,
+,VOLT_TEST,VOLT_TEST,VOLT_MEAS_MUX_SEL_DUT_QCC_BAT_STB,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_DUT_QCC_BAT_STB', 0.2]}",,5000,,2750,2950,mV,,,
+,VOLT_TEST,VOLT_TEST,VOLT_MEAS_MUX_SEL_DUT_QCC_SYS_CTRL,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_DUT_QCC_SYS_CTRL', 0.2]}",,5000,,-10,10,mV,,,
+,VOLT_TEST,VOLT_TEST,VOLT_MEAS_MUX_SEL_DUT_THERMISTOR,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_DUT_THERMISTOR', 0.2]}",,5000,,4950,5200,mV,,,
+,VOLT_TEST,VOLT_TEST,VOLT_MEAS_MUX_SEL_DUT_QCC_MIC_BIAS,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_DUT_QCC_MIC_BIAS', 0.2]}",,5000,,2300,2500,mV,,,
+,VOLT_TEST,VOLT_TEST,VOLT_MEAS_MUX_SEL_DUT_QCC_1V8,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_DUT_QCC_1V8', 0.2]}",,5000,,1800,2050,mV,,,
+,VOLT_TEST,VOLT_TEST,VOLT_MEAS_MUX_SEL_DUT_QCC_TBR_CLK,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_DUT_QCC_TBR_CLK', 0.2]}",,5000,,1300,1500,mV,,,
+,VOLT_TEST,VOLT_TEST,VOLT_MEAS_MUX_SEL_DUT_QCC_TBR_MISO,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_DUT_QCC_TBR_MISO', 0.2]}",,5000,,400,600,mV,,,
+,VOLT_TEST,VOLT_TEST,VOLT_MEAS_MUX_SEL_DUT_QCC_MIC_1_P,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_DUT_QCC_MIC_1_P', 0.2]}",,5000,,,,mV,,,
+,VOLT_TEST,VOLT_TEST,VOLT_MEAS_MUX_SEL_DUT_VPU_PDM_CLK,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_DUT_VPU_PDM_CLK', 0.2]}",,5000,,-10,10,mV,,,
+,VOLT_TEST,VOLT_TEST,VOLT_MEAS_MUX_SEL_DUT_VPU_PDM_DAT,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_DUT_VPU_PDM_DAT', 0.2]}",,5000,,-10,10,mV,,,
+,VOLT_TEST,VOLT_TEST,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+
+,USB_TEST,USB_TEST,USB_HECK,common.usb_test,20000,,50000,,,,,,,
+,USB_TEST,USB_TEST,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+
+,AUDIO_TEST,AUDIO_TEST,AUDIO_TEST,common.rpc_call,"{'func':'mixdevice.audio_volume', 'args':[60]}",,5000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,CONNECT_SPEAK_SEL_SW_SPEAK1,common.rpc_call,"{'func':'mixdevice.relay', 'args':['SPEAK_SEL_SW_SPEAK1']}",,5000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,CONNECT_AUDIO_INPUT_SEL_SW_DUT_MIC1,common.rpc_call,"{'func':'mixdevice.relay', 'args':['AUDIO_INPUT_SEL_SW_DUT_MIC1']}",,5000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,delay_1,common.delay,1000,,5000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,PCM_RECOED_AUDIO_INPUT_SEL_SW_DUT_MIC1,common.rpc_call,"{'func':'mixdevice.pcm_recode', 'args':['AUDIO_INPUT_SEL_SW_DUT_MIC1', 500, 48000, 500]}",,10000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,GET_AUDIO_INFO_AUDIO_INPUT_SEL_SW_DUT_MIC1,common.rpc_call,"{'func':'mixdevice.get_audio_info', 'args':['AUDIO_INPUT_SEL_SW_DUT_MIC1.wav', 10000, 48000]}",,10000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,CONNECT_AUDIO_INPUT_SEL_SW_DUT_AMP,common.rpc_call,"{'func':'mixdevice.relay', 'args':['AUDIO_INPUT_SEL_SW_DUT_AMP']}",,5000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,delay_2,common.delay,100,,5000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,PCM_RECOED_AUDIO_INPUT_SEL_SW_DUT_AMP,common.rpc_call,"{'func':'mixdevice.pcm_recode', 'args':['AUDIO_INPUT_SEL_SW_DUT_AMP', 500, 48000, 500]}",,5000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,GET_AUDIO_INFO_AUDIO_INPUT_SEL_SW_DUT_AMP,common.rpc_call,"{'func':'mixdevice.get_audio_info', 'args':['AUDIO_INPUT_SEL_SW_DUT_AMP.wav', 10000, 48000]}",,5000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,CONNECT_VPU_TO_EPS32_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['VPU_TO_EPS32_SEL_SW']}",,5000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,CONNECT_SPEAK_SEL_SW_SPEAK2,common.rpc_call,"{'func':'mixdevice.relay', 'args':['SPEAK_SEL_SW_SPEAK2']}",,5000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,delay_3,common.delay,1000,,5000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,PDM_RECORD,common.rpc_call,"{'func':'mixdevice.pdm_recode', 'args':['pdm', 500, 48000, 500]}",,5000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,GET_AUDIO_INFO_SPEAK_SEL_SW_SPEAK2,common.rpc_call,"{'func':'mixdevice.get_audio_info', 'args':['pdm.wav', 10000, 48000]}",,5000,,,,,,,
+,AUDIO_TEST,AUDIO_TEST,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+

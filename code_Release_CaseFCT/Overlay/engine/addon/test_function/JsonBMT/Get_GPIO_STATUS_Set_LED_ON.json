@@ -1,0 +1,38 @@
+{
+    "name": "T002 Aubrey_Case FCT Station",
+    "description": "T002 READ_LID/SET_LED_CASE_WHITE_ON/SET_LED_CASE_AMBER_ON/SET_LED_BUD_AMBER_ON/SET_LED_BUD_WHITE_ON/SET_LED_BUD_BLUE_ON",
+    "sequence":
+	[
+        {
+            "send": "Debug.GPIO.Get 31", 
+            "expect": ".",
+            "timeout": 5000
+        },
+        {
+            "send": "Debug.GPIO.SetGet 25,0,1,3",
+            "expect": ".",
+            "timeout": 5000
+        },
+        {
+            "send": "Debug.GPIO.SetGet 38,0,1,3",
+            "expect": ".",
+            "timeout": 5000
+        },
+        {
+            "send": "Debug.GPIO.SetGet 60,0,1,3", 
+            "expect": ".",
+            "timeout": 5000
+        },
+        {
+            "send": "Debug.GPIO.SetGet 23,0,1,3", 
+            "expect": ".",
+            "timeout": 5000
+        },
+        {
+            "send": "Debug.GPIO.SetGet 39,0,1,3", 
+            "expect": ".",
+            "timeout": 5000
+        }
+	]
+}
+

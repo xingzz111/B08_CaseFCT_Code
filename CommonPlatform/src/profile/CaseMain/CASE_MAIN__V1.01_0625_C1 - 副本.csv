@@ -1,0 +1,33 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,Fixture,Info,Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,Info,Vendor_ID,common.vendor_id,,,5000,,OSENS,OSENS,,,,
+,MES,UOP,@Check_uop,common.check_uop,[[[scanned_sn]]],,5000,,,,,,Y,
+,Fixture,Info,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,--PASS--,--PASS--,,,,
+,Fixture,RUN_BMT,@GET_BMT_VERSION,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool (\w+.\w+.\w+-\w+\+\w+)'}",,10000,,4.0.0-1225+ff003d5,4.0.0-1225+ff003d5,,,,
+,RESET_BUTTON_TEST,REBOOT,@reboot the DUT,common.powerCycle,,,10000,,--PASS--,--PASS--,,,,
+,RESET_BUTTON_TEST,delay,@delay2000ms,common.delay,5000,,50000,,--PASS--,--PASS--,,,,
+
+
+,BUD_L_CURRENT_ADC,RUN_BMT,@SET_BUD_5V_EN_l_LOW_RN,common.run_bmt_cmd,"{'cmd_key':'SET_BUD_5V_EN_L_LOW', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=40 Level=Low,GPIONum=40 Level=Low,,,,
+,BUD_L_CURRENT_ADC,delay,delay_200ms,common.delay,200,,5000,,--PASS--,--PASS--,,,,
+,BUD_L_CURRENT_ADC,CACULATE,@BUD_L_CURRENT_ADC_WITHOUT_ELOAD,common.adcRead,[[[scanned_sn]]],,15000,,100,400,mV,,,
+
+
+,BUD_L_CURRENT_ADC,RELAY_CONNECT,ELOAD_SEL_SW_ELOAD_POGO_TO_TPF510_BUD_RN_P,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_POGO_TO_TPF510_BUD_RN_P']}",,5000,,--PASS--,--PASS--,,,,
+,BUD_L_CURRENT_ADC,ELOAD_ENABLE,CH2_100MA,common.rpc_call,"{'func':'mixdevice.enableEload', 'args':[1, 100]}",,5000,,--PASS--,--PASS--,,,,
+,BUD_L_CURRENT_ADC,delay,delay_1000ms,common.delay,5000,,50000,,--PASS--,--PASS--,,,,
+,BUD_L_CURRENT_ADC,MEASURE_CURRENT,@Eload_MEASURE_CURRENT,common.measureEload,"{'ch':1, 'count':15}",,5000,,96,104,mA,,,
+,BUD_L_CURRENT_ADC,CACULATE,@BUD_L_CURRENT_ADC,common.adcRead,[[[scanned_sn]]],,15000,,700,1100,mV,,,
+,BUD_L_CURRENT_VOLTAGE,VOLT_MEASURE,@MUX_SEL_TPF601_BUD_L_CURRENT,common.measureVoltageDMM,"{'netName':'VOLT_MEAS_MUX_SEL_TPF601_BUD_R_CURRENT', 'ch':'ch1', 'count':3}",,5000,,700,1100,mV,,,
+,BUD_L_CURRENT_ADC,ADC_READ,@BUD_L_CURRENT_ADC_READ_RAW,common.adcReadRaw,[[[scanned_sn]]],[[ADC_RAW_L]],50000,,,,,,,
+,BUD_L_CURRENT_ADC,ADC_READ,@BUD_L_CURRENT_ADC_MILLIVOLTS,common.getValueForKey,[[ADC_RAW_L]],,5000,,,,,,,
+,BUD_L_CURRENT_ADC,ADC_READ,@BUD_L_CURRENT_ADC_RAW,common.getValueForKey,[[ADC_RAW_L]],,5000,,,,,,,
+,BUD_L_CURRENT_ADC,ADC_READ,@BUD_L_CURRENT_ADC_CHARGE_CURRENT,common.getValueForKey,[[ADC_RAW_L]],,5000,,,,,,,
+,BUD_L_CURRENT_ADC,ELOAD_DISABLE,CH2_0MA,common.rpc_call,"{'func':'mixdevice.disableEload', 'args':[1]}",,5000,,--PASS--,--PASS--,,,,
+,BUD_L_CURRENT_ADC,RELAY_DISCONNECT,ELOAD_SEL_SW_ELOAD_DISCONNECT_L,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_POGO_TO_TPF510_BUD_RN_P','DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,BUD_L_CURRENT_ADC,delay,delay_2000ms_2,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+
+
+
+,DUT_POWER_OFF,POWER_OFF,@POWER_OFF,common.powerOff,,,5000,,--PASS--,--PASS--,,,,
