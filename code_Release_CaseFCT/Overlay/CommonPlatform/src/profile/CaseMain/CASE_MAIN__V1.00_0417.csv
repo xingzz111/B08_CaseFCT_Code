@@ -1,0 +1,21 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,Info,Vendor_ID,common.vendor_id,,,5000,,OSENS,OSENS,,,,
+,Fixture,Info,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+,SHIPMODE,POWER,POWER_OFF,common.powerOff,,,5000,,,,,,,
+,SHIPMODE,RELAY_CONNECT,PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT']}",,5000,,,,,,,
+,SHIPMODE,CHARGE_OUTPUT,5V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000, 500]}",,5000,,,,,,,
+,SHIPMODE,RELAY_CONNECT,TPF235_LID_TO_1V8,common.rpc_call,"{'func':'mixdevice.relay', 'args':['TPF235_LID_TO_1V8']}",,5000,,,,,,,
+,SHIPMODE,RELAY_CONNECT,USB_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_SEL_SW']}",,5000,,,,,,,
+,SHIPMODE,RELAY_CONNECT,DUT_PCM_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['DUT_PCM_SEL_SW']}",,5000,,,,,,,
+,SHIPMODE,BATTERY_OUTPUT,3P8V,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[3800, 500]}",,5000,,,,,,,
+,SHIPMODE,delay,delay5000ms_1,common.delay,5000,,5000,,,,,,,
+,SHIPMODE,RUN_BMT,ENTER_SHIP_MODE,common.enterShipMode,[[scanned_sn]],,,,,,,,,
+,SHIPMODE,CHARGE_OUTPUT,10MV,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[10, 10]}",,5000,,,,,,,
+,SHIPMODE,RELAY_DISCONNECT,PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT', 'DISCONNECT']}",,5000,,,,,,,
+,SHIPMODE,RELAY_DISCONNECT,USB_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_SEL_SW', 'DISCONNECT']}",,5000,,,,,,,
+,SHIPMODE,delay,delay3000ms_1,common.delay,3000,,5000,,,,,,,
+,SHIPMODE,MEASURE_CURRENT,BATTERY,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '1ua']}",,,,,,,,,
+
+

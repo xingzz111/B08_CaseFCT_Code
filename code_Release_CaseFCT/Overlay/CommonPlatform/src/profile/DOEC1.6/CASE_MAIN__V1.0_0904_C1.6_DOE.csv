@@ -1,0 +1,257 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,Fixture,Info,Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,Info,Vendor_ID,common.vendor_id,,,5000,,OSENS,OSENS,,,,
+,MES,UOP,@Check_uop,common.check_uop,[[[scanned_sn]]],,5000,,,,,,Y,MES
+,Fixture,Info,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,--PASS--,--PASS--,,,,
+,Fixture,RUN_BMT,@GET_BMT_VERSION,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool (\w+.\w+.\w+-\w+\+\w+)'}",,10000,,4.0.0-1225+ff003d5,4.0.0-1225+ff003d5,,,,BMT
+
+,DUT_POWER_ON,POWER_ON,@DUT_Power_ON,common.powerOn,,,5000,,--PASS--,--PASS--,,,,PSU Module
+,DUT_POWER_ON,MEASURE_CURRENT,@Power on current,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['charger']}",,5000,,1,8,mA,,,PSU Module
+,VOLT_TEST,RELAY_CONNECT,DMM_VIN1_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['DMM_VIN1_SEL_SW']}",,5000,,--PASS--,--PASS--,,,,
+,VOLT_TEST,MUX_SEL_TPF301,@VMUX_OUT_Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF301_VMUX_OUT', 0.2]}",,5000,,4900,5100,mV,,,DMM Module
+,VOLT_TEST,MUX_SEL_TPF312,@VSYS Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF312_VSYS', 0.2]}",,5000,,3900,4300,mV,,,DMM Module
+,VOLT_TEST,MUX_SEL_TPF210,@VBUS Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF210_VBUS', 0.2]}",,5000,,4900,5100,mV,,,DMM Module
+,VOLT_TEST,MUX_SEL_TPF211,@VBUS_CLAMP Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF211_VBUS_CLAMP', 0.2]}",,5000,,4250,4300,mV,,,DMM Module
+,VOLT_TEST,MUX_SEL_TPF212,@VBUS_SENSE Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF212_VBUS_SENSE', 0.2]}",,5000,,1600,1700,mV,,,DMM Module
+,VOLT_TEST,MUX_SEL_TPF403,@VDD_USB Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF403_VDD_USB', 0.2]}",,5000,,3200,3400,mV,,,DMM Module
+,VOLT_TEST,MUX_SEL_TPF405,@VDD_1V8 Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF405_VDD_1V8', 0.2]}",,5000,,1720,1880,mV,,,DMM Module
+,VOLT_TEST,MUX_SEL_TPF404,@VBOOST Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF404_VBOOST', 0.2]}",,5000,,5100,5400,mV,,,DMM Module
+,VOLT_TEST,MUX_SEL_TPF236,@VDD_LED Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF236_VDD_LED', 0.2]}",,5000,,5100,5400,mV,,,DMM Module
+,VOLT_TEST,MUX_SEL_TPF709,@1BUD_DET_THRESH,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF709_1BUD_DET_THRESH', 0.2]}",,5000,,1260,1460,mV,,,DMM Module
+,VOLT_TEST,MUX_SEL_TPF708,@2BUD_DET_THRESH,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF708_2BUD_DET_THRESH', 0.2]}",,5000,,1580,1780,mV,,,DMM Module
+
+
+
+,DUTInfo,RUN_JSON_BMT,@Get_DUT_INFO,common.exec_json_cmd,"{'file_name':'Get_DUT_INFO.json', 'cmd_args': [[[scanned_sn]]]}",,5000,,,,,,,BMT
+,DUTInfo,READ_JSON_BMT_RESULT,@READ_PCBA_SN,common.get_json_result,"{'result_key_word':'Board SerialNumber=(\w+)'}",[[read_sn]],5000,,,,,,,BMT
+,DUTInfo,READ_JSON_BMT_RESULT,@Read_Station_Flag,common.get_json_result,"{'result_key_word':'TestStation.Status (\w+\=\w+)'}",,5000,,Station1Status=Pass,Station1Status=Pass,,,,BMT
+,DUTInfo,READ_JSON_BMT_RESULT,@Firmware Version Check,common.get_json_result,"{'result_key_word':'FirmwareVersion.Status Version=(\w+.\w+.\w+\-\w+\+\w+)'}",,5000,,0.0.9-56+ga664412,0.0.9-56+ga664412,,,,BMT
+,DUTInfo,READ_JSON_BMT_RESULT,@Read_HW_Version,common.get_json_result,"{'result_key_word':'Status HWRevision=(\w+\.\w+)'}",,5000,,C1.6,C1.6,,,,BMT
+,DUTInfo,READ_JSON_BMT_RESULT,@CHECK_DUT_SN,common.compareStr,"[[scanned_sn]]#[[read_sn]]",,5000,,--PASS--,--PASS--,,,,
+
+,USB_CC1_DETECT,RELAY_CONNECT,@USB_CC1_PULL_UP_56K_TO_VBUS,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_CC1_SEL_SW_56K_TO_VBUS']}",,5000,,--PASS--,--PASS--,,,,
+,USB_CC1_DETECT,delay,CC1_delay100ms,common.delay,100,,5000,,--PASS--,--PASS--,,,,
+,USB_CC1_DETECT,MUX_SEL_TPF215,@USB CC1 detect,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF215_USB_CC_DETECT', 0.2]}",,5000,,180,240,mV,,,DMM Module
+,READ_CC1_DETECT_ADC,ADC_READ,@Read CC1 detect ADC,common.ccDetectRead,[[[scanned_sn]]],,5000,,180,240,mV,,,BMT
+,USB_CC1_DETECT,RELAY_DISCONNECT,USB_CC1_SEL_SW_56K_TO_VBUS,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_CC1_SEL_SW_56K_TO_VBUS','DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,USB_CC2_DETECT,RELAY_CONNECT,@USB_CC2_PULL_UP_56K_TO_VBUS,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_CC2_SEL_SW_56K_TO_VBUS']}",,5000,,--PASS--,--PASS--,,,,
+,USB_CC2_DETECT,delay,CC2_delay100ms,common.delay,100,,5000,,--PASS--,--PASS--,,,,
+,USB_CC2_DETECT,MUX_SEL_TPF215,@USB CC2 detect,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF215_USB_CC_DETECT', 0.2]}",,5000,,180,240,mV,,,DMM Module
+,READ_CC2_DETECT_ADC,ADC_READ,@Read CC2 detect ADC,common.ccDetectRead,[[[scanned_sn]]],,5000,,180,240,mV,,,BMT
+,USB_CC2_DETECT,RELAY_DISCONNECT,USB_CC2_SEL_SW_56K_DISCONNECT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_CC2_SEL_SW_56K_TO_VBUS', 'DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+
+,POGO_5V_Output_High,RUN_BMT,@BUD_BIAS_DISABLE_HIGH,common.run_bmt_cmd,"{'cmd_key':'BUD_BIAS_DISABLE_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=47 Level=High,GPIONum=47 Level=High,,,,BMT
+,POGO_5V_Output_High,RUN_BMT,@SET_BUD_5V_EN_LOW,common.run_bmt_cmd,"{'cmd_key':'SET_BUD_5V_EN_L_LOW', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=40 Level=Low,GPIONum=40 Level=Low,,,,BMT
+,POGO_5V_Output_High,RUN_BMT,@SET_BUD_1V8_EN_HIGH,common.run_bmt_cmd,"{'cmd_key':'SET_BUD_1V8_EN_L_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=34 Level=High,GPIONum=34 Level=High,,,,BMT
+,POGO_5V_Output_High,delay,delay100ms,common.delay,100,,5000,,,,,,,
+,POGO_5V_Output_High,MUX_SEL_TPF505,@MEASURE_BUD_POGO_5V_EN_Enable,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF505_BUD_POGO_SNS', 0.2]}",,5000,,5100,5400,mV,,,DMM Module
+
+,POGO_5V_Output_Low,RUN_BMT,@SET_BUD_5V_EN_HIGH,common.run_bmt_cmd,"{'cmd_key':'SET_BUD_5V_EN_L_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=40 Level=High,GPIONum=40 Level=High,,,,BMT
+,POGO_5V_Output_Low,RUN_BMT,@SET_BUD_RESET_HIGH,common.run_bmt_cmd,"{'cmd_key':'BUD_RESET_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=61 Level=High,GPIONum=61 Level=High,,,,BMT
+,POGO_5V_Output_Low,MUX_SEL_TPF505,@MEASURE_BUD_POGO_5V_EN_Disable,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF505_BUD_POGO_SNS', 0.2]}",,5000,,0,100,mV,,,DMM Module
+
+,POGO_1V8_Output_High,RUN_BMT,@SET_BUD_RESET_LOW,common.run_bmt_cmd,"{'cmd_key':'BUD_RESET_LOW', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=61 Level=Low,GPIONum=61 Level=Low,,,,BMT
+,POGO_1V8_Output_High,RUN_BMT,@SET_BUD_1V8_EN_LOW,common.run_bmt_cmd,"{'cmd_key':'SET_BUD_1V8_EN_L_LOW', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=34 Level=Low,GPIONum=34 Level=Low,,,,BMT
+,POGO_1V8_Output_High,MUX_SEL_TPF505,@MEASURE_BUD_POGO_1V8_EN_Enable,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF505_BUD_POGO_SNS', 0.2]}",,5000,,1400,1700,mV,,,DMM Module
+
+,POGO_1V8_Output_Low,RUN_BMT,@SET_BUD_1V8_EN_HIGH,common.run_bmt_cmd,"{'cmd_key':'SET_BUD_1V8_EN_L_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=34 Level=High,GPIONum=34 Level=High,,,,BMT
+,POGO_1V8_Output_Low,RUN_BMT,@SET_BUD_RESET_HIGH,common.run_bmt_cmd,"{'cmd_key':'BUD_RESET_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=61 Level=High,GPIONum=61 Level=High,,,,BMT
+,POGO_1V8_Output_Low,MUX_SEL_TPF505,@MEASURE_BUD_POGO_1V8_EN_Disable,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF505_BUD_POGO_SNS', 0.2]}",,5000,,0,100,mV,,,DMM Module
+
+,POGO_Reset_Output_Voltage,RUN_BMT,@SET_BUD_1V8_EN_LOW,common.run_bmt_cmd,"{'cmd_key':'SET_BUD_1V8_EN_L_LOW', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=34 Level=Low,GPIONum=34 Level=Low,,,,BMT
+,POGO_Reset_Output_Voltage,MUX_SEL_TPF505,@MEASURE_BUD_POGO_BUD_RESET_HIGH,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF505_BUD_POGO_SNS', 0.2]}",,5000,,400,600,mV,,,DMM Module
+
+,POGO_Bias_Output_High,RUN_BMT,@BUD_BIAS_DISABLE_LOW,common.run_bmt_cmd,"{'cmd_key':'BUD_BIAS_DISABLE_LOW', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=47 Level=Low,GPIONum=47 Level=Low,,,,BMT
+,POGO_Bias_Output_High,RUN_BMT,@SET_BUD_1V8_EN_HIGH,common.run_bmt_cmd,"{'cmd_key':'SET_BUD_1V8_EN_L_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=34 Level=High,GPIONum=34 Level=High,,,,BMT
+,POGO_Bias_Output_High,RUN_BMT,@BUD_RESET_Low,common.run_bmt_cmd,"{'cmd_key':'BUD_RESET_LOW', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=61 Level=Low,GPIONum=61 Level=Low,,,,BMT
+,POGO_Bias_Output_High,MUX_SEL_TPF505,@MEASURE_BUD_POGO_Bias_Output_HIGH,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF505_BUD_POGO_SNS', 0.2]}",,5000,,1700,1900,mV,,,DMM Module
+
+,POGO_Bias_Output_Low,RUN_BMT,@BUD_BIAS_DISABLE_HIGH,common.run_bmt_cmd,"{'cmd_key':'BUD_BIAS_DISABLE_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=47 Level=High,GPIONum=47 Level=High,,,,BMT
+,POGO_Bias_Output_Low,RUN_BMT,@BUD_RESET_HIGH,common.run_bmt_cmd,"{'cmd_key':'BUD_RESET_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=61 Level=High,GPIONum=61 Level=High,,,,BMT
+,POGO_Bias_Output_Low,MUX_SEL_TPF505,@Bias_Output_LOW,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF505_BUD_POGO_SNS', 0.2]}",,5000,,0,100,mV,,,DMM Module
+
+,COMPARATOR_TEST,POWER,@POWER_OFF,common.powerOff,,,10000,,--PASS--,--PASS--,,,,PSU Module
+,COMPARATOR_TEST,POWER_ON,@DUT_Power_ON,common.powerOn,,,5000,,--PASS--,--PASS--,,,,PSU Module
+,COMPARATOR_TEST,delay,delay2000ms,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+,COMPARATOR_TEST,RUN_BMT,@STOP_PLC,common.run_bmt_cmd,"{'cmd_key':'STOP_PLC', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'CaseDebug.ChargerInterconnectBudControl.Result (\w+=\w+)\s*'}",,5000,,Id=0,Id=0,,,,BMT
+,COMPARATOR_TEST,RUN_BMT,@COMP_REINIT,common.run_bmt_cmd,"{'cmd_key':'COMP_REINIT', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Response=Comp 1 & 2 (\w+)'}",,5000,,reinit,reinit,,,,BMT
+,COMPARATOR_TEST,RUN_BMT,@COMP_ON,common.run_bmt_cmd,"{'cmd_key':'COMP_ON', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Response=Comp 1 & 2 (\w+)'}",,5000,,enabled,enabled,,,,BMT
+,COMPARATOR_TEST,RUN_BMT,@NUMCUFFSINCase0,common.run_bmt_cmd,"{'cmd_key':'NUMCUFFSINCase', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.TAP.Status Response=(\w+)'}",,5000,,0,0,,,,BMT
+,COMPARATOR_TEST,RELAY_CONNECT,@RELAY_CONNECT_BUD_POGO_TO_GND_LOAD_1,common.rpc_call,"{'func':'mixdevice.relay', 'args':['BUD_POGO_TO_GND_LOAD_1']}",,5000,,--PASS--,--PASS--,,,,
+,COMPARATOR_TEST,RUN_BMT,@NUMCUFFSINCase1,common.run_bmt_cmd,"{'cmd_key':'NUMCUFFSINCase', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.TAP.Status Response=(\w+)'}",,5000,,1,1,,,,BMT
+,COMPARATOR_TEST,RELAY_CONNECT,@RELAY_CONNECT_BUD_POGO_TO_GND_LOAD_2,common.rpc_call,"{'func':'mixdevice.relay', 'args':['BUD_POGO_TO_GND_LOAD_2']}",,5000,,--PASS--,--PASS--,,,,
+,COMPARATOR_TEST,RUN_BMT,@NUMCUFFSINCase2,common.run_bmt_cmd,"{'cmd_key':'NUMCUFFSINCase', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.TAP.Status Response=(\w+)'}",,5000,,2,2,,,,BMT
+,COMPARATOR_TEST,RUN_BMT,@COMP_DEINIT,common.run_bmt_cmd,"{'cmd_key':'COMP_DEINIT', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Comp 1 & 2 pins (\w+)'}",,5000,,deinit,deinit,,,,BMT
+,COMPARATOR_TEST,RUN_BMT,@ResetCase,common.run_bmt_cmd,"{'cmd_key':'ResetCase', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Control\.(\w+\.\w+)\s*'}",,5000,,Reset.Result,Reset.Result,,,,BMT
+,COMPARATOR_TEST,delay,delay4000ms,common.delay,4000,,5000,,,,,,,
+
+,SPIKE_TEST,RUN_BMT,@STOP_PLC,common.run_bmt_cmd,"{'cmd_key':'STOP_PLC', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'CaseDebug.ChargerInterconnectBudControl.Result (\w+=\w+)\s*'}",,5000,,Id=0,Id=0,,,,BMT
+,SPIKE_TEST,RUN_BMT,@TURN_ON_5V,common.run_bmt_cmd,"{'cmd_key':'TURN_ON_5V', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'BUD_5V_EN (\w+)'}",,5000,,enabled,enabled,,,,BMT
+,SPIKE_TEST,RUN_BMT,@RESET_DETECTION,common.run_bmt_cmd,"{'cmd_key':'RESET_DETECTION', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.TAP.Status Response=(\w+)'}",,5000,,Success,Success,,,,BMT
+,SPIKE_TEST,RUN_BMT,@GET_DETECTION00,common.run_bmt_cmd,"{'cmd_key':'GET_DETECTION', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.TAP.Status Response=(\w+=\w+\, \w+=\w+)'}",,5000,,L=0 R=0,L=0 R=0,,,,BMT
+,SPIKE_TEST,RELAY_CONNECT,@RELAY_CONNECT_SIMULATE_L_CUFF_INSERTION,common.rpc_call,"{'func':'mixdevice.relay', 'args':['SIMULATE_L_CUFF_INSERTION']}",,5000,,--PASS--,--PASS--,,,,
+,SPIKE_TEST,RUN_BMT,@GET_DETECTION10,common.run_bmt_cmd,"{'cmd_key':'GET_DETECTION', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.TAP.Status Response=(\w+=\w+\, \w+=\w+)'}",,5000,,L=1 R=0,L=1 R=0,,,,BMT
+,SPIKE_TEST,RELAY_CONNECT,@RELAY_CONNECT_SIMULATE_R_CUFF_INSERTION,common.rpc_call,"{'func':'mixdevice.relay', 'args':['SIMULATE_R_CUFF_INSERTION']}",,5000,,--PASS--,--PASS--,,,,
+,SPIKE_TEST,RUN_BMT,@GET_DETECTION11,common.run_bmt_cmd,"{'cmd_key':'GET_DETECTION', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.TAP.Status Response=(\w+=\w+\, \w+=\w+)'}",,5000,,L=1 R=1,L=1 R=1,,,,BMT
+,SPIKE_TEST,RUN_BMT,@ResetCase,common.run_bmt_cmd,"{'cmd_key':'ResetCase', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Control\.(\w+\.\w+)\s*'}",,5000,,Reset.Result,Reset.Result,,,,BMT
+
+,PRE_CHARGE,POWER,POWER_OFF,common.powerOff,,,5000,,--PASS--,--PASS--,,,,
+,PRE_CHARGE,RELAY_CONNECT,DUT_PCM_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['DUT_PCM_SEL_SW']}",,5000,,--PASS--,--PASS--,,,,
+,PRE_CHARGE,RELAY_CONNECT,@NTC_SEL_SW_NORMAL_TEMP,common.rpc_call,"{'func':'mixdevice.relay', 'args':['NTC_SEL_SW_NORMAL_TEMP']}",,5000,,--PASS--,--PASS--,,,,
+,PRE_CHARGE,RELAY_CONNECT,PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT']}",,5000,,--PASS--,--PASS--,,,,
+,PRE_CHARGE,CHARGE_OUTPUT,@VBUS_5V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000, 500]}",,5000,,--PASS--,--PASS--,,,,PSU
+,PRE_CHARGE,BATTERY_OUTPUT,@Battery_2P85V,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[2850, 500]}",,5000,,--PASS--,--PASS--,,,,
+,PRE_CHARGE,RELAY_CONNECT,TPF235_LID_TO_1V8,common.rpc_call,"{'func':'mixdevice.relay', 'args':['TPF235_LID_TO_1V8']}",,5000,,--PASS--,--PASS--,,,,
+,PRE_CHARGE,RELAY_CONNECT,@Connect_USB,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_SEL_SW']}",,5000,,--PASS--,--PASS--,,,,
+,PRE_CHARGE,delay,@delay2000ms,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+,PRE_CHARGE,RUN_BMT,@Changing_Enabled,common.run_bmt_cmd,"{'cmd_key':'SET_BATTERY_TEMPERATURE', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'ChargerEnabled.Status (\w+\=\w+)'}",,5000,,Enabled=True,Enabled=True,,,,BMT
+,PRE_CHARGE,delay,@delay2000ms_1,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+,PRE_CHARGE,MEASURE_CURRENT,@Pre-charge I @ 2.85V,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '500ma']}",,5000,,-48,-32,mA,,,PSU Module
+,PRE_CHARGE,RELAY_DISCONNECT,NTC_SEL_SW_NORMAL_TEMP,common.rpc_call,"{'func':'mixdevice.relay', 'args':['NTC_SEL_SW_NORMAL_TEMP', 'DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,PRE_CHARGE,CHARGE_OUTPUT,CHARGE_OUTPUT_0V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[10, 10]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,PRE_CHARGE,BATTERY_OUTPUT,BATTERY_OUTPUT_0V,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[10, 10]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+
+,NORMAL_CHARGE,RELAY_CONNECT,NTC_SEL_NORMAL_TEMP,common.rpc_call,"{'func':'mixdevice.relay', 'args':['NTC_SEL_SW_NORMAL_TEMP']}",,5000,,--PASS--,--PASS--,,,,
+,NORMAL_CHARGE,BATTERY_OUTPUT,@Battery_3V8,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[3800, 500]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,NORMAL_CHARGE,CHARGE_OUTPUT,5V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000, 500]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,NORMAL_CHARGE,BATTERY,@Battery_Temp_Check,common.temperatureRead,[[[scanned_sn]]],,25000,,20,30,C,,,BMT
+,NORMAL_CHARGE,MEASURE_CURRENT,@Normal charge  I @ 3.8V,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '500ma']}",,5000,,-400,-300,mA,,,PSU Module
+,NORMAL_CHARGE,RELAY_DISCONNECT,NTC_SEL_SW_NORMAL_TEMP,common.rpc_call,"{'func':'mixdevice.relay', 'args':['NTC_SEL_SW_NORMAL_TEMP', 'DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,NORMAL_CHARGE,CHARGE_OUTPUT,0V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[10, 10]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,NORMAL_CHARGE,BATTERY_OUTPUT,0V,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[10, 10]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+
+,LOW_TEMP_CHARGE,RELAY_CONNECT,@NTC_SEL_LOW_TEMP,common.rpc_call,"{'func':'mixdevice.relay', 'args':['NTC_SEL_SW_LOW_TEMP']}",,5000,,--PASS--,--PASS--,,,,
+,LOW_TEMP_CHARGE,BATTERY_OUTPUT,3V8,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[3800, 500]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,LOW_TEMP_CHARGE,CHARGE_OUTPUT,5V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000, 500]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,LOW_TEMP_CHARGE,delay,delay500ms,common.delay,500,,15000,,--PASS--,--PASS--,,,,
+,LOW_TEMP_CHARGE,MEASURE_CURRENT,@Low temp charge I @ 3.8V,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '50ma']}",,5000,,-0.5,0.5,mA,,,PSU Module
+,LOW_TEMP_CHARGE,CHARGE_OUTPUT,0V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[10, 10]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,LOW_TEMP_CHARGE,BATTERY_OUTPUT,0V,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[10, 10]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+
+,HIGH_TEMP_CHARGE,RELAY_CONNECT,@NTC_SEL_HIGH_TEMP,common.rpc_call,"{'func':'mixdevice.relay', 'args':['NTC_SEL_SW_HIGH_TEMP']}",,5000,,--PASS--,--PASS--,,,,
+,HIGH_TEMP_CHARGE,BATTERY_OUTPUT,3V8,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[3800, 500]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,HIGH_TEMP_CHARGE,CHARGE_OUTPUT,5V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000, 500]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,HIGH_TEMP_CHARGE,delay,delay500ms,common.delay,500,,15000,,--PASS--,--PASS--,,,,
+,HIGH_TEMP_CHARGE,MEASURE_CURRENT,@High temp charge I @ 3.8V,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '50ma']}",,5000,,-0.5,0.5,mA,,,PSU Module
+,HIGH_TEMP_CHARGE,CHARGE_OUTPUT,0V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[10, 10]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,HIGH_TEMP_CHARGE,BATTERY_OUTPUT,0V,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[10, 10]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+
+,FULL_CHARGE,RELAY_CONNECT,@NTC_SEL_SW_NORMAL_TEMP,common.rpc_call,"{'func':'mixdevice.relay', 'args':['NTC_SEL_SW_NORMAL_TEMP']}",,5000,,--PASS--,--PASS--,,,,
+,FULL_CHARGE,BATTERY_OUTPUT,@Battery_4P48V,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[4480, 500]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,FULL_CHARGE,CHARGE_OUTPUT,5V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000, 500]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,FULL_CHARGE,delay,dela500ms,common.delay,500,,5000,,--PASS--,--PASS--,,,,
+,FULL_CHARGE,MEASURE_CURRENT,@Full charge  I @ 4.48V,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '50ma']}",,5000,,-0.5,0.5,mA,,,PSU Module
+,FULL_CHARGE,CHARGE_OUTPUT,0V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[10, 10]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,FULL_CHARGE,BATTERY_OUTPUT,0V,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[10, 10]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+
+,USB_OVP_7V,BATTERY_OUTPUT,@Battery_3P8V,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[3800, 500]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,USB_OVP_7V,CHARGE_OUTPUT,@VBUS_7V0,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[7000, 500]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,USB_OVP_7V,delay,delay500ms,common.delay,500,,500,,--PASS--,--PASS--,,,,
+,USB_OVP_7V,MEASURE_CURRENT,@USB OVP Protect 7V,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '50ma']}",,5000,,-15,15,mA,,,PSU Module
+
+,BUTTON_L_TEST,RELAY_CONNECT,DMM_VIN1_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['DMM_VIN1_SEL_SW']}",,5000,,--PASS--,--PASS--,,,,
+,BUTTON_L_TEST,CHARGE_OUTPUT,5V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000, 500]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,BUTTON_L_TEST,delay,delay3000ms,common.delay,3000,,5000,,--PASS--,--PASS--,,,,
+,BUTTON_L_TEST,RELAY_CONNECT,@CYLINDER_TO_BUTTON,common.rpc_call,"{'func':'mixdevice.relay', 'args':['CYLINDER_TO_BUTTON']}",,5000,,--PASS--,--PASS--,,,,
+,BUTTON_L_TEST,delay,delay1000ms,common.delay,1000,,5000,,--PASS--,--PASS--,,,,
+,BUTTON_L_TEST,VOLT_MEASURE1,MUX_SEL_BUTTON_RESET,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF502_CC_RX', 0.2]}",,5000,,1750,1850,mV,,,DMM Module
+,BUTTON_L_TEST,RUN_BMT,@PRESS_S2_READ_GPIO,common.run_bmt_cmd,"{'cmd_key':'GET_BUTTON_L_GPIO_LOW', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'GPIONum=9 Level=(\w+)'}",,5000,,Low,Low,,,,BMT
+,BUTTON_L_TEST,RELAY_DISCONNECT,@RELEASE_CYLINDER_TO_BUTTON,common.rpc_call,"{'func':'mixdevice.relay', 'args':['CYLINDER_TO_BUTTON', 'DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,BUTTON_L_TEST,delay,delay200ms,common.delay,200,,5000,,--PASS--,--PASS--,,,,
+,BUTTON_L_TEST,RUN_BMT,@RELEASE_S2_READ_GPIO,common.run_bmt_cmd,"{'cmd_key':'GET_BUTTON_L_GPIO_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'GPIONum=9 Level=(\w+)'}",,5000,,High,High,,,,BMT
+
+,GPIO,RELAY_CONNECT,@Set the GPIO to HIGH,common.rpc_call,"{'func':'mixdevice.relay', 'args':['TPF235_LID_TO_1V8']}",,5000,,--PASS--,--PASS--,,,,
+,LED_CASE_WHITE_H,RELAY_CONNECT,DMM_VIN1_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['DMM_VIN1_SEL_SW']}",,5000,,--PASS--,--PASS--,,,,
+
+,BMT,RUN_JSON_BMT,@Get_GPIO_STATUS_HIGH,common.exec_json_cmd,"{'file_name':'Get_GPIO_STATUS_Set_LED_ON.json', 'cmd_args': [[[scanned_sn]]]}",,5000,,,,,,,BMT
+,LID_H,READ_JSON_BMT_RESULT,@READ_LID,common.get_json_result,"{'result_key_word':'Level=(\w+)'}",,5000,,High,High,,,,BMT
+
+,LED_CASE_WHITE_H,READ_JSON_BMT_RESULT,@SET_LED_CASE_WHITE_ON,common.get_json_result,"{'result_key_word':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=25 Level=Low,GPIONum=25 Level=Low,,,,BMT
+,LED_CASE_AMBER_H,READ_JSON_BMT_RESULT,@SET_LED_CASE_AMBER_ON,common.get_json_result,"{'result_key_word':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=38 Level=Low,GPIONum=38 Level=Low,,,,BMT
+,LED_BUD_AMBER_H,READ_JSON_BMT_RESULT,@SET_LED_BUD_AMBER_ON,common.get_json_result,"{'result_key_word':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=60 Level=Low,GPIONum=60 Level=Low,,,,BMT
+,LED_BUD_WHITE_H,READ_JSON_BMT_RESULT,@SET_LED_BUD_WHITE_ON,common.get_json_result,"{'result_key_word':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=23 Level=Low,GPIONum=23 Level=Low,,,,BMT
+,LED_BUD_BLUE_H,READ_JSON_BMT_RESULT,@SET_LED_BUD_BLUE_ON,common.get_json_result,"{'result_key_word':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=39 Level=Low,GPIONum=39 Level=Low,,,,BMT
+
+,LED_CASE_WHITE_H,MUX_SEL_TPF228,@LED_CASE_WHITE_Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF228_LED_CASE_WHITE', 0.2]}",,5000,,-50,50,mV,,,DMM Module
+,LED_CASE_AMBER_H,MUX_SEL_TPF229,@LED_CASE_AMBER_Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF229_LED_CASE_AMBER', 0.2]}",,5000,,-50,50,mV,,,DMM Module
+,LED_BUD_AMBER_H,MUX_SEL_TPF230,@LED_BUD_AMBER_Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF230_LED_BUD_AMBER', 0.2]}",,5000,,-50,50,mV,,,DMM Module
+,LED_BUD_WHITE_H,MUX_SEL_TPF231,@LED_BUD_WHITE_Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF231_LED_BUD_WHITE', 0.2]}",,5000,,-50,50,mV,,,DMM Module
+,LED_BUD_BLUE_H,MUX_SEL_TPF232,@LED_BUD_BLUE_Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF232_LED_BUD_BLUE', 0.2]}",,5000,,-50,50,mV,,,DMM Module
+
+
+,GPIO,RELAY_CONNECT,@Set the GPIO to LOW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['TPF235_LID_TO_GND']}",,5000,,--PASS--,--PASS--,,,,
+,BMT,RUN_JSON_BMT,@Get_GPIO_STATUS_LOW,common.exec_json_cmd,"{'file_name':'Get_GPIO_STATUS_Set_LED_OFF.json', 'cmd_args': [[[scanned_sn]]]}",,5000,,,,,,,BMT
+,LID_L,READ_JSON_BMT_RESULT,@READ_LID,common.get_json_result,"{'result_key_word':'Level=(\w+)'}",,5000,,Low,Low,,,,BMT
+
+,LED_CASE_WHITE_L,READ_JSON_BMT_RESULT,@SET_LED_CASE_WHITE_OFF,common.get_json_result,"{'result_key_word':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=25 Level=High,GPIONum=25 Level=High,,,,BMT
+,LED_CASE_AMBER_L,READ_JSON_BMT_RESULT,@SET_LED_CASE_AMBER_OFF,common.get_json_result,"{'result_key_word':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=38 Level=High,GPIONum=38 Level=High,,,,BMT
+,LED_BUD_AMBER_L,READ_JSON_BMT_RESULT,@SET_LED_BUD_AMBER_OFF,common.get_json_result,"{'result_key_word':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=60 Level=High,GPIONum=60 Level=High,,,,BMT
+,LED_BUD_WHITE_L,READ_JSON_BMT_RESULT,@SET_LED_BUD_WHITE_OFF,common.get_json_result,"{'result_key_word':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=23 Level=High,GPIONum=23 Level=High,,,,BMT
+,LED_BUD_BLUE_L,READ_JSON_BMT_RESULT,@SET_LED_BUD_BLUE_OFF,common.get_json_result,"{'result_key_word':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=39 Level=High,GPIONum=39 Level=High,,,,BMT
+
+
+,LED_CASE_WHITE_L,MUX_SEL_TPF228,@LED_CASE_WHITE_Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF228_LED_CASE_WHITE', 0.2]}",,5000,,1700,1900,mV,,,DMM Module
+,LED_CASE_AMBER_L,MUX_SEL_TPF229,@LED_CASE_AMBER_Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF229_LED_CASE_AMBER', 0.2]}",,5000,,1700,1900,mV,,,DMM Module
+,LED_BUD_AMBER_L,MUX_SEL_TPF230,@LED_BUD_AMBER_Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF230_LED_BUD_AMBER', 0.2]}",,5000,,1700,1900,mV,,,DMM Module
+,LED_BUD_WHITE_L,MUX_SEL_TPF231,@LED_BUD_WHITE_Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF231_LED_BUD_WHITE', 0.2]}",,5000,,1700,1900,mV,,,DMM Module
+,LED_BUD_BLUE_L,MUX_SEL_TPF232,@LED_BUD_BLUE_Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF232_LED_BUD_BLUE', 0.2]}",,5000,,1700,1900,mV,,,DMM Module
+
+,BUD_L_CURRENT_ADC,RUN_BMT,@SET_BUD_5V_EN_l_LOW_LN,common.run_bmt_cmd,"{'cmd_key':'SET_BUD_5V_EN_L_LOW', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=40 Level=Low,GPIONum=40 Level=Low,,,,BMT
+,BUD_L_CURRENT_ADC,delay,delay_200ms,common.delay,200,,5000,,--PASS--,--PASS--,,,,
+,BUD_L_CURRENT_ADC,CACULATE,@BUD_L_CURRENT_ADC_WITHOUT_ELOAD,common.adcRead,[[[scanned_sn]]],,15000,,100,400,mV,,,BMT
+,BUD_L_CURRENT_ADC,RELAY_CONNECT,ELOAD_SEL_SW_ELOAD_POGO_TO_TPF510_BUD_LN_P,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_POGO_TO_TPF510_BUD_RN_P']}",,5000,,--PASS--,--PASS--,,,,
+,BUD_L_CURRENT_ADC,ELOAD_ENABLE,CH2_100MA,common.rpc_call,"{'func':'mixdevice.enableEload', 'args':[1, 100]}",,5000,,--PASS--,--PASS--,,,,ELOAD Module
+,BUD_L_CURRENT_ADC,delay,delay_1000ms,common.delay,1000,,5000,,--PASS--,--PASS--,,,,
+,BUD_L_CURRENT_ADC,MEASURE_CURRENT,@Eload_MEASURE_CURRENT,common.measureEload,"{'ch':1, 'count':15}",,5000,,96,104,mA,,,ELOAD Module
+,BUD_L_CURRENT_ADC,CACULATE,@BUD_L_CURRENT_ADC,common.adcRead,[[[scanned_sn]]],,15000,,700,1100,mV,,,BMT
+,BUD_L_CURRENT_VOLTAGE,VOLT_MEASURE,@MUX_SEL_TPF601_BUD_L_CURRENT,common.measureVoltageDMM,"{'netName':'VOLT_MEAS_MUX_SEL_TPF601_BUD_R_CURRENT', 'ch':'ch1', 'count':3}",,5000,,700,1100,mV,,,DMM Module
+,BUD_L_CURRENT_ADC,ELOAD_DISABLE,CH2_0MA,common.rpc_call,"{'func':'mixdevice.disableEload', 'args':[1]}",,5000,,--PASS--,--PASS--,,,,
+,BUD_L_CURRENT_ADC,RELAY_DISCONNECT,ELOAD_SEL_SW_ELOAD_DISCONNECT_L,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_POGO_TO_TPF510_BUD_RN_P','DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,BUD_L_CURRENT_ADC,delay,delay_2000ms_2,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+
+
+,BUD_R_CURRENT_ADC,RUN_BMT,@SET_BUD_5V_EN_L_LOW_RN,common.run_bmt_cmd,"{'cmd_key':'SET_BUD_5V_EN_L_LOW', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,GPIONum=40 Level=Low,GPIONum=40 Level=Low,,,,BMT
+,BUD_R_CURRENT_ADC,delay,delay_200ms,common.delay,200,,5000,,,,,,,
+,BUD_R_CURRENT_ADC,CACULATE,@BUD_R_CURRENT_ADC_WITHOUT_ELOAD,common.adcRead,[[[scanned_sn]]],,15000,,100,400,mV,,,BMT
+,BUD_R_CURRENT_ADC,RELAY_CONNECT,ELOAD_SEL_SW_ELOAD_POGO_TO_TPF512_BUD_RN_P,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_POGO_TO_TPF512_BUD_LN_P']}",,5000,,--PASS--,--PASS--,,,,
+,BUD_R_CURRENT_ADC,ELOAD_ENABLE,CH1_100MA,common.rpc_call,"{'func':'mixdevice.enableEload', 'args':[0, 100]}",,5000,,--PASS--,--PASS--,,,,ELOAD Module
+,BUD_R_CURRENT_ADC,delay,delay_500ms,common.delay,500,,5000,,--PASS--,--PASS--,,,,
+,BUD_R_CURRENT_ADC,MEASURE_CURRENT,@Eload_MEASURE_CURRENT,common.measureEload,"{'ch':0, 'count':15}",,5000,,96,104,mA,,,ELOAD Module
+,BUD_R_CURRENT_ADC,CACULATE,@BUD_R_CURRENT_ADC,common.adcRead,[[[scanned_sn]]],,15000,,700,1100,mV,,,BMT
+,BUD_R_CURRENT_VOLTAGE,VOLT_MEASURE,@MUX_SEL_TPF602_BUD_R_CURRENT,common.measureVoltageDMM,"{'netName':'VOLT_MEAS_MUX_SEL_TPF602_BUD_L_CURRENT', 'ch':'ch1', 'count':3}",,5000,,700,1100,mV,,,DMM Module
+,BUD_R_CURRENT_ADC,ELOAD_DISABLE,CH1_0MA,common.rpc_call,"{'func':'mixdevice.disableEload', 'args':[0]}",,5000,,--PASS--,--PASS--,,,,
+,BUD_R_CURRENT_ADC,RELAY_DISCONNECT,ELOAD_SEL_SW_ELOAD_DISCONNECT_R,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_POGO_TO_TPF512_BUD_LN_P','DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+
+
+,WIRELESS_CHARGE_INIT,WIRELESS_CHARGE,@WIRELESS_CHARGE,common.Wireless_Charger_Output,[[[scanned_sn]]],,200000,,--PASS--,--PASS--,,,,
+,WIRELESS_GET_INFO,RUN_JSON_BMT,@Get_WIRELESS_INFO,common.exec_json_cmd,"{'file_name':'Get_Wireless_INFO.json', 'cmd_args': [[[scanned_sn]]]}",,5000,,--PASS--,--PASS--,,,,BMT
+,WLSS_RX_CHIP_ID,READ_JSON_BMT_RESULT,@WLSS_RX_CHIP_ID,common.get_json_result,"{'result_key_word':'StatusQualifier=(\w+)'}",,10000,,3269,3269,,,,BMT
+,WLSS_RX_STATUS,READ_JSON_BMT_RESULT,@WLSS_RX_STATUS,common.get_json_result,"{'result_key_word':'StatusQualifier=(\w+)'}",,10000,,3,3,,,,BMT
+,WLSS_RX_ADC_IOUT,CALCULATE,@IOUT,common.caculateWireless,,,15000,,0,10,mA,,,BMT
+,WLSS_RX_ADC_VOUT,CALCULATE,@VOUT,common.caculateWireless,,,15000,,4900,5200,mV,,,BMT
+,WIRELESS_CHARGE_INIT,@CHARGE_OUTPUT,0V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[10, 10]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,WIRELESS_CHARGE_INIT,RELAY_DISCONNECT,@DISCONNECT_PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT', 'DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,WIRELESS,delay,@delay3000ms,common.delay,3000,,15000,,--PASS--,--PASS--,,,,
+,WLSS_BATTERY_CHARGING_CURRENT,MEASURE_CURRENT,@Wireless_On_Battery_Current,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '500ma']}",,,,-400,-300,mA,,,PSU Module
+,WLSS_VOUT,MUX_SEL_TPF807,@VOUT_W_IN2_Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TPF807_VOUT_W_IN2', 0.2]}",,5000,,4900,5100,mV,,,DMM Module
+,TX_PAD_WORKING_VOLTAGE,CALCULATE,@WireLess_Charger_Voltage_tx,common.caculateVoltage,,,15000,,7000,8000,mV,,,DMM Module
+,TX_PAD_WORKING_CURRENT,CURRENT_MEASURE,@WireLess_Charger_Current_tx,common.measureVoltageDMM,"{'netName':'DMM_VIN2_SEL_SW_WIRELESS_CHARGE_CURR', 'ch':'ch0', 'count':5}",,15000,,380,550,mA,,,DMM Module
+
+,WRITE_STATION_FLAG,POWER,@POWER_CYCLE,common.powerCycle,,,10000,,--PASS--,--PASS--,,,,
+,WRITE_STATION_FLAG,delay,@delay2000ms,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+,WRITE_STATION_FLAG,GET,TEST_INFO,common.get_testResult,[[[result]]],{{TEST_RESULT}},5000,,,,,,,
+,WRITE_STATION_FLAG,JSON_BMT_RUN,@WRITE_TEST_STATION_FLAG_PASS,common.exec_json_cmd,"{'file_name':'Write_FCT_PASS.json', 'cmd_args': [[[scanned_sn]]]}",,5000,,--PASS--,--PASS--,,TEST_RESULT == PASS,,BMT
+,WRITE_STATION_FLAG,JSON_BMT_RUN,@WRITE_TEST_STATION_FLAG_FAIL,common.exec_json_cmd,"{'file_name':'Write_FCT_FAIL.json', 'cmd_args': [[[scanned_sn]]]}",,5000,,--PASS--,--PASS--,,TEST_RESULT == FAIL,,BMT
+,WRITE_STATION_FLAG,READ_JSON_BMT_RESULT,@JSON_GET_WRITE_STATION_FLAG_PASS,common.get_json_result,"{'result_key_word':'Station1Status=Pass (\w+\=\w+)'}",,5000,,Station2Status=Pass,Station2Status=Pass,,TEST_RESULT == PASS,,BMT
+,WRITE_STATION_FLAG,READ_JSON_BMT_RESULT,@JSON_GET_WRITE_STATION_FLAG_FAIL,common.get_json_result,"{'result_key_word':'Station1Status=Pass (\w+\=\w+)'}",,5000,,Station2Status=None,Station2Status=None,,TEST_RESULT == FAIL,,BMT
+,READ_STATION_FLAG,READ_JSON_BMT_RESULT,@JSON_GET_READ_TEST_STATION_FLAG_PASS,common.get_json_result,"{'result_key_word':'Station1Status=Pass (\w+\=\w+)'}",,5000,,Station2Status=Pass,Station2Status=Pass,,TEST_RESULT == PASS,,BMT
+,READ_STATION_FLAG,READ_JSON_BMT_RESULT,@JSON_GET_READ_TEST_STATION_FLAG_FAIL,common.get_json_result,"{'result_key_word':'Station1Status=Pass (\w+\=\w+)'}",,5000,,Station2Status=None,Station2Status=None,,TEST_RESULT == FAIL,,BMT
+
+,SHIPMODE,RUN_BMT,@ENTER_SHIP_MODE,common.enterShipMode,[[scanned_sn]],,10000,,--PASS--,--PASS--,,,,BMT
+,SHIPMODE,CHARGE_OUTPUT,10MV,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[10, 10]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,SHIPMODE,RELAY_DISCONNECT,PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT', 'DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,SHIPMODE,RELAY_DISCONNECT,@DISCONNECT_USB_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_SEL_SW', 'DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,SHIPMODE,delay,@delay3000ms,common.delay,3000,,5000,,--PASS--,--PASS--,,,,
+,SHIPMODE,MEASURE_CURRENT,@Ship_mode_current,common.measureCurrentShipMode,,,,,0,200,uA,,,PSU Module
+,DUT_POWER_OFF,POWER_OFF,@POWER_OFF,common.powerOff,,,5000,,--PASS--,--PASS--,,,,

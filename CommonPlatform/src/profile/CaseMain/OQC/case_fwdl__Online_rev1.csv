@@ -1,0 +1,44 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,SN,common.get_scan_sn,[[scanned_sn]],,,,,,,,,
+,Fixture,Info,Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,Info,Vendor_ID,common.vendor_id,,,5000,,OSENS,OSENS,,,,
+
+,PRE_CHARGE,RELAY_CONNECT,NTC_SEL_SW_NORMAL_TEMP,common.rpc_call,"{'func':'mixdevice.relay', 'args':['NTC_SEL_SW_NORMAL_TEMP']}",,5000,,,,,,,
+,PRE_CHARGE,RELAY_CONNECT,TPF235_LID_TO_1V8,common.rpc_call,"{'func':'mixdevice.relay', 'args':['TPF235_LID_TO_1V8']}",,5000,,,,,,,
+,PRE_CHARGE,RELAY_CONNECT,PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT']}",,5000,,,,,,,
+,PRE_CHARGE,CHARGE_OUTPUT,5V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000, 500]}",,5000,,,,,,,
+,PRE_CHARGE,RELAY_CONNECT,DUT_PCM_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['DUT_PCM_SEL_SW']}",,5000,,,,,,,
+,PRE_CHARGE,RELAY_CONNECT,USB_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_SEL_SW']}",,5000,,,,,,,
+,PRE_CHARGE,BATTERY_OUTPUT,2P85V,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[2850, 500]}",,5000,,,,,,,
+,PRE_CHARGE,RELAY_CONNECT,PSU_BATT_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_BATT_TO_DUT']}",,5000,,,,,,,
+,PRE_CHARGE,delay,delay2000ms_1,common.delay,2000,,5000,,,,,,,
+,PRE_CHARGE,RUN_BMT,SET_BATTERY_TEMPERATURE,common.run_bmt_cmd,"{'cmd_key':'SET_BATTERY_TEMPERATURE', 'cmd_args': [[[scanned_sn]]], 'expect_keyword':'Status Enabled=True'}",,,,,,,,,
+,PRE_CHARGE,delay,delay500ms_1,common.delay,500,,5000,,,,,,,
+,PRE_CHARGE,MEASURE_CURRENT,BATTERY,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '500ma']}",,,,,,,,,
+
+,NORMAL_CHARGE,BATTERY_OUTPUT,3P8V,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[3800, 500]}",,5000,,,,,,,
+,NORMAL_CHARGE,delay,delay500ms_1,common.delay,500,,5000,,,,,,,
+,NORMAL_CHARGE,MEASURE_CURRENT,BATTERY,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '500ma']}",,,,,,,,,
+
+
+,LOW_TEMP_CHARGE,RELAY_CONNECT,NTC_SEL_SW_LOW_TEMP,common.rpc_call,"{'func':'mixdevice.relay', 'args':['NTC_SEL_SW_LOW_TEMP']}",,5000,,,,,,,
+,LOW_TEMP_CHARGE,delay,delay500ms_1,common.delay,500,,5000,,,,,,,
+,LOW_TEMP_CHARGE,MEASURE_CURRENT,BATTERY,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '500ma']}",,,,,,,,,
+
+,HIGH_TEMP_CHARGE,RELAY_CONNECT,NTC_SEL_SW_HIGH_TEMP,common.rpc_call,"{'func':'mixdevice.relay', 'args':['NTC_SEL_SW_HIGH_TEMP']}",,5000,,,,,,,
+,HIGH_TEMP_CHARGE,delay,delay500ms_1,common.delay,500,,5000,,,,,,,
+,HIGH_TEMP_CHARGE,MEASURE_CURRENT,BATTERY,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '500ma']}",,,,,,,,,
+
+
+,FULL_CHARGE,RELAY_CONNECT,NTC_SEL_SW_NORMAL_TEMP,common.rpc_call,"{'func':'mixdevice.relay', 'args':['NTC_SEL_SW_NORMAL_TEMP']}",,5000,,,,,,,
+,FULL_CHARGE,BATTERY_OUTPUT,4P25V,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[4250, 500]}",,5000,,,,,,,
+,FULL_CHARGE,delay,delay500ms_1,common.delay,500,,5000,,,,,,,
+,FULL_CHARGE,MEASURE_CURRENT,BATTERY,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '500ma']}",,,,,,,,,
+
+
+,USB_OVP,BATTERY_OUTPUT,3P8V,common.rpc_call,"{'func':'mixdevice.batteryEnable', 'args':[3800, 500]}",,5000,,,,,,,
+,USB_OVP,CHARGE_OUTPUT,7V2,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[7200, 500]}",,5000,,,,,,,
+,USB_OVP,delay,delay500ms_1,common.delay,500,,5000,,,,,,,
+,USB_OVP,MEASURE_CHARGE_CURRENT,CHARGER,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['charger']}",,,,,,,,,
+,USB_OVP,MEASURE_CURRENT,BATTERY,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '500ma']}",,,,,,,,,
+

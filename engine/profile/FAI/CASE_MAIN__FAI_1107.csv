@@ -1,0 +1,18 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,Fixture,Info,Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,Info,Vendor_ID,common.vendor_id,,,5000,,OSENS,OSENS,,,,
+,Fixture,Info,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,--PASS--,--PASS--,,,,
+,Fixture,RUN_BMT,@GET_BMT_VERSION,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool (\w+.\w+.\w+-\w+\+\w+)'}",,10000,,5.3.0-1384+a170927,5.3.0-1384+a170927,,,,
+
+,DUT_POWER_ON,POWER_ON,DUT_Power_ON,common.powerOn,,,5000,,--PASS--,--PASS--,,,,
+,DUT_POWER_ON,delay,delay3000ms,common.delay,3000,,5000,,--PASS--,--PASS--,,,,
+
+,DUTInfo,READ_INFO,@READ_PCBA_SN,common.run_bmt_cmd,"{'cmd_key':'READ_PCBA_SN', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Board SerialNumber=(\w+)'}",[[read_sn]],5000,,,,,,,
+,DUTInfo,READ_INFO,CHECK_DUT_SN,common.compareStr,"[[scanned_sn]]#[[read_sn]]",,5000,,--PASS--,--PASS--,,,,
+,DUTInfo,READ_INFO,@Firmware Version Check,common.run_bmt_cmd,"{'cmd_key':'GET_FW_VISION', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'FirmwareVersion.Status Version=(\w+.\w+.\w+\-\w+\+\w+)'}",,5000,,0.1.1-5+g94f8d54,0.1.1-5+g94f8d54,,,,
+,DUTInfo,READ_INFO,@Read_HW_Version,common.run_bmt_cmd,"{'cmd_key':'GET_HW_REVISION', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Status HWRevision=(\w+)'}",,5000,,C2,C2,,,,
+,DUTInfo,RUN_BMT,@CHARGER_I2C_TEST,common.run_bmt_cmd,"{'cmd_key':'CHARGER_I2C_TEST', 'cmd_args': [[[scanned_sn]]], 'Timeout':10000, 'parse_pattern':'I2CCheck.Status Status=0 (\w+\=\w+)'}",,5000,,StatusQualifier=34,StatusQualifier=34,,,,
+,DUTInfo,READ_INFO,@READ_STATION_FLAG,common.run_bmt_cmd,"{'cmd_key':'READ_TEST_STATION_FLAG', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'TestStation.Status (\w+\=\w+\ \w+\=\w+)'}",,5000,,Station1Status=Pass Station2Status=Pass,Station1Status=Pass Station2Status=Pass,,,,
+
+,DUT_POWER_OFF,POWER_OFF,POWER_OFF,common.powerOff,,,5000,,--PASS--,--PASS--,,,,
