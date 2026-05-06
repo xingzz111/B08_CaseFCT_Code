@@ -1,0 +1,30 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,Fixture,Info,@Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,RUN_BMT,@GET_BMT_VERSION,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool BMT:\s*(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,5.1.0-1286+e381751,5.1.0-1286+e381751,,,,BMT
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+,POWER_ON,POWER,@POWER_ON,common.powerOn,,,5000,,,,mS,,,
+,POWER_ON,delay,@delay5000ms,common.delay,5000,,5000,,--PASS--,--PASS--,,,,
+,POWER_ON,MEASURE_CURRENT,@CURRENT,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['charger', '500ma']}",,5000,,,,mA,,,
+
+
+,USB_OCP,RELAY_CONNECT,DMM_VIN1_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['DMM_VIN1_SEL_SW']}",,5000,,--PASS--,--PASS--,,,,
+,USB_OCP,MEASURE,@VCHG_USB Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP5_VCHG_USB']}",,5000,,4900,5100,mV,,,
+,USB_OCP,ELOAD_ENABLE,CH0_450MA,common.rpc_call,"{'func':'mixdevice.enableEload', 'args':[0, 425]}",,5000,,--PASS--,--PASS--,,,,ELOAD Module
+,USB_OCP,RELAY_CONNECT,@ELOAD_SEL_SW_ELOAD_TP5_VCHG_USB,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_TP5_VCHG_USB']}",,5000,,--PASS--,--PASS--,,,,
+,USB_OCP,delay,@delay1000ms,common.delay,1000,,5000,,--PASS--,--PASS--,,,,
+,USB_OCP,MEASURE,@VCHG_USB Voltage_After_Load,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP5_VCHG_USB']}",,5000,,-5,5,mV,,,
+
+
+
+,TEARDOWN,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+
+
+
+
+
+
+
+
+

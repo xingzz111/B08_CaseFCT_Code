@@ -19,6 +19,36 @@ jobs:
         with:
           lfs: true
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+          cache: "pip"
+          cache-dependency-path: |
+            CommonPlatform/requirements-build.txt
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          $possible = @(
+            "C:\Program Files (x86)\Inno Setup 6",
+            "C:\Program Files\Inno Setup 6"
+          )
+          foreach ($p in $possible) {
+            if (Test-Path $p) { Add-Content -Path $env:GITHUB_PATH -Value $p }
+          }
+          if (-not (Get-Command iscc.exe -ErrorAction SilentlyContinue)) {
+            throw "iscc.exe not found in PATH after install"
+          }
+
+      - name: Build OSENSTester + Installer
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $ver = $tag.TrimStart("v")
+          ./scripts/build_windows_release.ps1 -Python python -ReleaseDir "code_Release_CaseFCT" -Version $ver
+
       - name: Create code release zip
         shell: pwsh
         run: |
@@ -34,10 +64,12 @@ jobs:
         with:
           name: windows-release-${{ github.ref_name }}
           path: |
+            code_Release_CaseFCT/Output/*.exe
             ${{ env.ZIP_PATH }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
+            code_Release_CaseFCT/Output/*.exe
             ${{ env.ZIP_PATH }}

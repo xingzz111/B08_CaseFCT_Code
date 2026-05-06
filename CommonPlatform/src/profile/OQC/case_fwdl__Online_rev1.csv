@@ -1,0 +1,59 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,Fixture,Info,Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,Info,Vendor_ID,common.vendor_id,,,5000,,OSENS,OSENS,,,,
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,,,,,,,,
+,Fixture,RUN_BMT,GET_VERSION,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool (\w+.\w+.\w+-\w+\+\w+)'}",,5000,,,,,,,
+
+,OPEN_SHORT,CCS_OUTPUT,50MA_1V,common.rpc_call,"{'func':'mixdevice.ccs_svs_setup', 'args':[50, 1000]}",,5000,,,,,,,
+,FWDL,delay,delay100ms_1,common.delay,100,,5000,,,,,,,
+
+
+
+
+,FWDL,RELAY_CONNECT,PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT']}",,5000,,,,,,,
+,FWDL,delay,delay1000ms_1,common.delay,1000,,5000,,,,,,,
+,FWDL,CHARGE_OUTPUT,5V_100MA,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000,100]}",,5000,,,,,,,
+,FWDL,delay,delay1000ms_2,common.delay,1000,,5000,,,,,,,
+,FWDL,RELAY_CONNECT,SWD_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['SWD_SEL_SW']}",,5000,,,,,,,
+,FWDL,PROGRAM,PROGRAM_STM32,common.program_firmware,"['STM32U375RG', 'D:/RestorePackage/0416/flash_image.bin']",,50000,,,,,,,
+,FWDL,CHARGE_OUTPUT,0V_100MA,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[0,100]}",,5000,,,,,,,
+,FWDL,RELAY_DISCONNECT,PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT', 'DISCONNECT']}",,5000,,,,,,,
+
+
+
+,UART,RELAY_CONNECT,PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT']}",,5000,,,,,,,
+,UART,delay,delay1000ms_1,common.delay,1000,,5000,,,,,,,
+,UART,CHARGE_OUTPUT,5V_100MA,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000,100]}",,5000,,,,,,,
+,UART,delay,delay1000ms_2,common.delay,1000,,5000,,,,,,,
+
+
+,UART,RELAY_CONNECT,UART_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['UART_SEL_SW']}",,5000,,,,,,,
+,UART,delay,delay1000ms_3,common.delay,1000,,5000,,,,,,,
+
+
+,DUTInfo,writeSN,writeSN,common.writeSN,[[scanned_sn]],,30000,E,,,,,,
+,DUTInfo,delay,delay1000ms_1,common.delay,1000,,5000,R,,,,,,
+,DUTInfo,CHARGE_OUTPUT,0V_100MA,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[0,100]}",,5000,,,,,,,
+,DUTInfo,RELAY_DISCONNECT,PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT', 'DISCONNECT']}",,5000,,,,,,,
+,DUTInfo,RELAY_CONNECT,PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT']}",,5000,,,,,,,
+,DUTInfo,delay,delay1000ms_2,common.delay,1000,,5000,,,,,,,
+,DUTInfo,CHARGE_OUTPUT,5V_100MA,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000,100]}",,5000,,,,,,,
+,DUTInfo,delay,delay1000ms_3,common.delay,1000,,5000,,,,,,,
+,DUTInfo,RELAY_CONNECT,USB_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_SEL_SW']}",,5000,,,,,,,
+,DUTInfo,CHECK,USB,common.checkUSB,,,30000,,,,,,,
+
+,DUTInfo,SEND_READ,VR,common.uart_test,"{'cmd':'vr', 'expectKeyword':'SpitfireCoreServices'}",,15000,,,,,,,
+,DUTInfo,RUN_BMT,WRITE_HW_VERSION,common.run_bmt_cmd,"{'cmd_key':'WRITE_HW_VERSION', 'cmd_args': [[[scanned_sn]]]}",,5000,,,,,,,
+,DUTInfo,RUN_BMT,CC_TX_RX_TEST,common.run_bmt_cmd,"{'cmd_key':'CC_TX_RX_TEST', 'cmd_args': [[[scanned_sn]]]}",,5000,,,,,,,
+,DUTInfo,RUN_BMT,READ_PCBA_SN,common.run_bmt_cmd,"{'cmd_key':'READ_PCBA_SN', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Board SerialNumber=(\w+)'}",[[read_sn]],,5000,,,,,,
+,DUTInfo,SN_COMPARE,COMPARE_SN,common.compareStr,"[[scanned_sn]]#[[read_sn]]",,5000,,,,,,,
+,DUTInfo,RUN_BMT,GET_HW_REVISION,common.run_bmt_cmd,"{'cmd_key':'GET_HW_REVISION', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Status HWRevision=(\w+)'}",,5000,,,,,,,
+,DUTInfo,RUN_BMT,GET_FW_VISION,common.run_bmt_cmd,"{'cmd_key':'GET_FW_VISION', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'FirmwareVersion.Status Version=(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,,,,,,
+,DUTInfo,RUN_BMT,CHARGER_I2C_TEST,common.run_bmt_cmd,"{'cmd_key':'CHARGER_I2C_TEST', 'cmd_args': [[[scanned_sn]]], 'Timeout':10000}",,5000,,,,,,,
+,DUTInfo,RUN_BMT,WRITE_TEST_STATION_FLAG,common.run_bmt_cmd,"{'cmd_key':'WRITE_TEST_STATION_FLAG', 'cmd_args': [[[scanned_sn]]]}",,5000,,,,,,,
+,DUTInfo,RUN_BMT,READ_TEST_STATION_FLAG,common.run_bmt_cmd,"{'cmd_key':'READ_TEST_STATION_FLAG', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Status (\w+)Status=Pass'}",,5000,,,,,,,
+,DUTInfo,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,,,,,,,,
+
+
+

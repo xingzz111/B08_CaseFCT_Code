@@ -1,0 +1,58 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,MES,UOP,@Get_SN_MES_INFO,common.check_uop,[[[scanned_sn]]],,5000,,,,,,Y,MES
+,Fixture,RUN_BMT,@Get_BMT_Version,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool BMT:\s*(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,5.1.0-1286+e381751,5.1.0-1286+e381751,,,,BMT
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+,LED_TEST,POWER,POWER_CYCLE,common.powerCycle,,,15000,,--PASS--,--PASS--,,,,
+,LED_CASE_BLUE,RUN_BMT,@SET_LED_CASE_BLUE_ON,common.run_bmt_cmd,"{'cmd_key':'SET_LED_CASE_BLUE_ON', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.LEDs.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,PatternID=LED3 Priority=0,PatternID=LED3 Priority=0,,,,BMT
+,LED_CASE_BLUE,delay,delay1000ms,common.delay,1000,,5000,R,--PASS--,--PASS--,,,,
+,LED_CASE_BLUE,LED,@LED_TEST_BLUE,common.led_test,"{'color':'blue'}",[[CASE_BLUE]],10000,,,,,,,LED Module
+,LED_CASE_BLUE,CASE_BLUE_R,@CASE_BLUE_R,common.getValueForLED,[[[CASE_BLUE]]],,5000,,1,25,,,,
+,LED_CASE_BLUE,CASE_BLUE_G,@CASE_BLUE_G,common.getValueForLED,[[[CASE_BLUE]]],,5000,,10,40,,,,
+,LED_CASE_BLUE,CASE_BLUE_B,@CASE_BLUE_B,common.getValueForLED,[[[CASE_BLUE]]],,5000,,250,255,,,,
+,LED_CASE_BLUE,CASE_BLUE_LUX,@CASE_BLUE_I,common.getValueForLED,[[[CASE_BLUE]]],,5000,,10,30,,,,
+
+,LED_TEST,RUN_BMT,@SET_LED_CASE_WHITE_ON,common.run_bmt_cmd,"{'cmd_key':'SET_LED_CASE_WHITE_ON', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.LEDs.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,PatternID=LED1 Priority=0,PatternID=LED1 Priority=0,,,,BMT
+,LED_TEST,delay,delay1000ms,common.delay,1000,,5000,R,--PASS--,--PASS--,,,,
+,LED_CASE_WHITE,LED,@LED_TEST_WHITE,common.led_test,"{'color':'white'}",[[CASE_WHITE]],10000,,,,,,,LED Module
+,LED_CASE_WHITE,CASE_WHITE_R,@CASE_WHITE_R,common.getValueForLED,[[[CASE_WHITE]]],,5000,,80,255,,,,
+,LED_CASE_WHITE,CASE_WHITE_G,@CASE_WHITE_G,common.getValueForLED,[[[CASE_WHITE]]],,5000,,90,255,,,,
+,LED_CASE_WHITE,CASE_WHITE_B,@CASE_WHITE_B,common.getValueForLED,[[[CASE_WHITE]]],,5000,,250,255,,,,
+,LED_CASE_WHITE,CASE_WHITE_LUX,@CASE_WHITE_I,common.getValueForLED,[[[CASE_WHITE]]],,5000,,20,50,,,,
+
+,LED_CASE_AMBER,RUN_BMT,@SET_LED_CASE_AMBER_ON,common.run_bmt_cmd,"{'cmd_key':'SET_LED_CASE_AMBER_ON', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.LEDs.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,PatternID=LED2 Priority=0,PatternID=LED2 Priority=0,,,,BMT
+,LED_CASE_AMBER,delay,delay1000ms,common.delay,1000,,5000,R,--PASS--,--PASS--,,,,
+,LED_CASE_AMBER,LED,@LED_TEST_AMBER,common.led_test,"{'color':'amber'}",[[CASE_AMBER]],10000,,,,,,,LED Module
+,LED_CASE_AMBER,CASE_AMBER_R,@CASE_AMBER_R,common.getValueForLED,[[[CASE_AMBER]]],,5000,,250,255,,,,
+,LED_CASE_AMBER,CASE_AMBER_G,@CASE_AMBER_G,common.getValueForLED,[[[CASE_AMBER]]],,5000,,45,235,,,,
+,LED_CASE_AMBER,CASE_AMBER_B,@CASE_AMBER_B,common.getValueForLED,[[[CASE_AMBER]]],,5000,,1,25,,,,
+,LED_CASE_AMBER,CASE_AMBER_LUX,@CASE_AMBER_I,common.getValueForLED,[[[CASE_AMBER]]],,5000,,10,30,,,,
+
+,OPAMP1,ADC_READ,@OPAMP1_VOUT_ADC_WITHOUT_ELOAD,common.adcRead,[[[scanned_sn]]],,15000,,300,500,mV,,,BMT
+,OPAMP1,MEASURE,@OPAMP1_VOUT_FIXTURE_WITHOUT_ELOAD,common.measureVoltageDMM,"{'ch':'ch1', 'netName':'VOLT_MEAS_MUX_SEL_TP56_25_OPAMP1_VOUT', 'count':10}",,5000,,300,500,mV,,,DMM Module
+,OPAMP1,RELAY_CONNECT,ELOAD_SEL_SW_ELOAD_POGO_R,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_POGO_R']}",,5000,,--PASS--,--PASS--,,,,
+,OPAMP1,ELOAD_ENABLE,CH0_100MA,common.rpc_call,"{'func':'mixdevice.enableEload', 'args':[0, 100]}",,5000,,--PASS--,--PASS--,,,,ELOAD Module
+,OPAMP1,delay,delay3000ms,common.delay,3000,,5000,,--PASS--,--PASS--,,,,
+,OPAMP1,MEASURE_CURRENT,@OPAMP1_FIXTURE_Eload_MEASURE_CURRENT,common.measureEload,"{'ch':0, 'count':15}",,5000,,96,104,mA,,,ELOAD Module
+,OPAMP1,ADC_READ,@OPAMP1_VOUT_ADC_Eload_100mA,common.adcRead,[[[scanned_sn]]],,15000,,850,1100,mV,,,BMT
+,OPAMP1,MEASURE,@OPAMP1_VOUT_FIXTURE_Eload_100mA,common.measureVoltageDMM,"{'ch':'ch1', 'netName':'VOLT_MEAS_MUX_SEL_TP56_25_OPAMP1_VOUT', 'count':10}",,5000,,850,1100,mV,,,DMM Module
+,OPAMP1,CMD_READ,@OPAMP1_VOUT_CMD,common.adcReadRaw,[[[scanned_sn]]],,50000,E,850,1100,mV,,,BMT
+,OPAMP1,ELOAD_DISABLE,CH0_0MA,common.rpc_call,"{'func':'mixdevice.disableEload', 'args':[0]}",,5000,,--PASS--,--PASS--,,,,ELOAD Module
+,OPAMP1,RELAY_DISCONNECT,RELAY_DISCONNECT_ELOAD_SEL_SW_ELOAD_POGO_R,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_POGO_R', 'DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,OPAMP1,delay,delay5000ms,common.delay,5000,,5000,,--PASS--,--PASS--,,,,
+
+,OPAMP2,ADC_READ,@OPAMP2_VOUT_ADC_WITHOUT_ELOAD,common.adcRead,[[[scanned_sn]]],,15000,,300,500,mV,,,BMT
+,OPAMP2,MEASURE,@OPAMP2_VOUT_FIXTURE_WITHOUT_ELOAD,common.measureVoltageDMM,"{'ch':'ch1', 'netName':'VOLT_MEAS_MUX_SEL_TP55_28_OPAMP2_VOUT', 'count':10}",,5000,,300,500,mV,,,DMM Module
+,OPAMP2,RELAY_CONNECT,ELOAD_SEL_SW_ELOAD_POGO_L,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_POGO_L']}",,5000,,--PASS--,--PASS--,,,,
+,OPAMP2,ELOAD_ENABLE,CH1_100MA,common.rpc_call,"{'func':'mixdevice.enableEload', 'args':[1, 100]}",,5000,,--PASS--,--PASS--,,,,ELOAD Module
+,OPAMP2,delay,delay3000ms,common.delay,3000,,5000,,--PASS--,--PASS--,,,,
+,OPAMP2,MEASURE_CURRENT,@OPAMP2_FIXTURE_MEASURE_ELOAD_100mA,common.measureEload,"{'ch':1, 'count':15}",,5000,,96,104,mA,,,ELOAD Module
+,OPAMP2,ADC_READ,@OPAMP2_VOUT_ADC_Eload_100mA,common.adcRead,[[[scanned_sn]]],,15000,,850,1100,mV,,,BMT
+,OPAMP2,MEASURE,@OPAMP2_VOUT_FIXTURE_Eload_100mA,common.measureVoltageDMM,"{'ch':'ch1', 'netName':'VOLT_MEAS_MUX_SEL_TP55_28_OPAMP2_VOUT', 'count':10}",,5000,,850,1100,mV,,,DMM Module
+,OPAMP2,CMD_READ,@OPAMP2_VOUT_CMD,common.adcReadRaw,[[[scanned_sn]]],,50000,E,850,1100,mV,,,BMT
+
+,OPAMP2,ELOAD_DISABLE,CH1_0MA,common.rpc_call,"{'func':'mixdevice.disableEload', 'args':[1]}",,5000,,--PASS--,--PASS--,,,,
+,OPAMP2,RELAY_CONNECT,RELAY_DISCONNECT_ELOAD_SEL_SW_ELOAD_POGO_L,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_POGO_L', 'DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+
+,TEARDOWN,reset,@DUT_Power_OFF,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,

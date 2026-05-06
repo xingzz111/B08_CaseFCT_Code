@@ -1,0 +1,14 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,MES,UOP,@Get_SN_MES_INFO,common.check_uop,[[[scanned_sn]]],,5000,,,,,,Y,MES
+,Fixture,RUN_BMT,@Get_BMT_Version,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool BMT:\s*(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,5.1.0-1286+e381751,5.1.0-1286+e381751,,,,BMT
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+,WLSS,INIT,@Wireless_charging_Init,common.wirelessChargingInit,,,15000,,--PASS--,--PASS--,,,,WIRELESS Module
+,WLSS,delay,delay5000ms,common.delay,5000,,5000,,--PASS--,--PASS--,,,,
+,WLSS_RX_CHIP_ID,RUN_BMT,@WLSS_RX_Chip_ID,common.run_bmt_cmd,"{'cmd_key':'WLSS_RX_CHIP_ID', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'StatusQualifier=(\w+)'}",,10000,,3269,3269,,,,
+,WLSS_RX_STATUS,RUN_BMT,@WLSS_RX_Status,common.run_bmt_cmd,"{'cmd_key':'WLSS_RX_STATUS', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'StatusQualifier=(\w+)'}",,10000,,3,3,,,,
+,WLSS_RX_ADC_IOUT,CALCULATE,@WLSS_RX_ADC_IOUT,common.caculateWireless,[[[scanned_sn]]],,15000,,0,300,mA,,,
+,WLSS_RX_ADC_VOUT,CALCULATE,@WLSS_RX_ADC_VOUT,common.caculateWireless,[[[scanned_sn]]],,15000,,4900,5200,mV,,,
+
+,TEARDOWN,reset,@DUT_Power_OFF,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,

@@ -1,0 +1,12 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,MES,UOP,@Get_SN_MES_INFO,common.check_uop,[[[scanned_sn]]],,5000,,,,,,Y,MES
+,Fixture,RUN_BMT,@Get_BMT_Version,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool BMT:\s*(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,5.1.0-1286+e381751,5.1.0-1286+e381751,,,,BMT
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+,DUTInfo,POWER,POWER_CYCLE,common.powerCycle,,,15000,,--PASS--,--PASS--,,,,
+
+,BUTTON_L_TEST,RUN_BMT,@BUTTON_L_Test,common.buttonLTest,[[[scanned_sn]]],,5000,,GPIONum=45 Level=Low,GPIONum=45 Level=Low,,,,BMT
+,BUTTON_H_TEST,RUN_BMT,@BUTTON_H_Test,common.buttonHTest,[[[scanned_sn]]],,5000,,GPIONum=45 Level=High,GPIONum=45 Level=High,,,,BMT
+
+,TEARDOWN,reset,@DUT_Power_OFF,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,

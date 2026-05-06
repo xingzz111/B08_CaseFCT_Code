@@ -1,0 +1,28 @@
+{
+    "name": "T002 Spice_Case FCT Station",
+    "description": "T002 DISABLE_BUD_CONTROL/ENABLE_5V_OUTPUT/OPAMP1_VOUT/OPAMP2_VOUT",
+    "sequence":
+	[
+        {
+            "send": "CaseDebug.ChargerInterconnectBudControl.Start 3", 
+            "expect": "CaseDebug.ChargerInterconnectBudControl.Result Id=0",
+            "timeout": 5000
+        },
+        {
+            "send": "CaseDebug.ChargerInterconnectVoltControl.SetGet 1, 1",
+            "expect": ".",
+            "timeout": 5000
+        },
+        {
+            "send": "Debug.ADC.Get 100", 
+            "expect": ".",
+            "timeout": 5000
+        },
+        {
+            "send": "Debug.ADC.Get 101",
+            "expect": ".",
+            "timeout": 5000
+        }
+	]
+}
+

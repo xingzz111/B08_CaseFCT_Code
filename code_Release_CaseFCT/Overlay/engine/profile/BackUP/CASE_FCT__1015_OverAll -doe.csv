@@ -1,0 +1,53 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,MES,UOP,@Check_UOP,common.check_uop,[[[scanned_sn]]],,5000,,,,,,Y,MES
+,Fixture,RUN_BMT,@GET_BMT_VERSION,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool BMT:\s*(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,5.1.0-1286+e381751,5.1.0-1286+e381751,,,,BMT
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+,DUT_POWER_ON,OUTPUT,@BATTERY_OUTPUT_3V8,common.batteryPowerOn,,,5000,,--PASS--,--PASS--,,,,PSU Module
+,DUT_POWER_ON,MEASURE_CURRENT,@Power on current,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '500ma']}",,5000,,10,30,mA,,,
+,DUT_POWER_ON,delay,@delay2000ms,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+,NRST_RISING,MEASURE,@NRST rising width,common.risingWidth,,,5000,,70,100,mS,,,CoreBoard Module
+,VOLTAGE_TEST,delay,@delay2000ms,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+,VOLTAGE_TEST,RELAY_CONNECT,DMM_VIN1_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['DMM_VIN1_SEL_SW']}",,5000,,--PASS--,--PASS--,,,,
+,VOLTAGE_TEST,MEASURE,@VBUS Voltage,common.rpc_call,"{'func':'mixdevice.measureVoltageByOdin', 'args':['charger']}",,5000,,4850,5150,mV,,,
+,VOLTAGE_TEST,MEASURE,@VCHG_USB Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP5_VCHG_USB']}",,5000,,4850,5150,mV,,,DMM Module
+,VOLTAGE_TEST,MEASURE,@VBUS_DET Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP52_14_VBUS_DET']}",,5000,,2600,3000,mV,,,DMM Module
+,VOLTAGE_TEST,MEASURE,@VBUS_5V,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP10_VBUS_5V']}",,5000,,4850,5150,mV,,,DMM Module
+,VOLTAGE_TEST,MEASURE,@VLDO_3V3 Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP13_VLDO_3V3']}",,5000,,3200,3600,mV,,,DMM Module
+,VOLTAGE_TEST,MEASURE,@LDO_1V8_EN Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP70_41_LDO_1V8_EN']}",,5000,,3200,3600,mV,,,DMM Module
+,VOLTAGE_TEST,MEASURE,@OPAMP_POWER_IO Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP73_37_OPAMP_POWER_IO']}",,5000,,3200,3600,mV,,,DMM Module
+,VOLTAGE_TEST,MEASURE,@VDD_OPAMP Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP57_VDD_OPAMP']}",,5000,,3200,3600,mV,,,DMM Module
+,VOLTAGE_TEST,MEASURE,@Charger_Int Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP85_10_CHARGER_INT']}",,5000,,3200,3600,mV,,,DMM Module
+,VOLTAGE_TEST,MEASURE,@Wireless_EN_H Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP74_15_WIRELESS_EN']}",,5000,,4850,5150,mV,,,DMM Module
+,VOLTAGE_TEST,RELAY_CONNECT,RELAY_CONNECT_USB_CC1_SEL_SW_56K_TO_VBUS,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_CC1_SEL_SW_56K_TO_VBUS']}",,5000,,--PASS--,--PASS--,,,,
+,VOLTAGE_TEST,MEASURE,@USB CC1 detect,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP47_CC1']}",,5000,,370,450,mV,,,DMM Module
+,VOLTAGE_TEST,RELAY_DISCONNECT,RELAY_DISCONNECT_USB_CC1_SEL_SW_56K_TO_VBUS,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_CC1_SEL_SW_56K_TO_VBUS','DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,VOLTAGE_TEST,RELAY_CONNECT,RELAY_CONNECT_USB_CC2_SEL_SW_56K_TO_VBUS,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_CC2_SEL_SW_56K_TO_VBUS']}",,5000,,--PASS--,--PASS--,,,,
+,VOLTAGE_TEST,MEASURE,@USB CC2 detect,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP48_CC2']}",,5000,,370,450,mV,,,DMM Module
+,VOLTAGE_TEST,RELAY_DISCONNECT,RELAY_DISCONNECT_USB_CC2_SEL_SW_56K_TO_VBUS,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_CC2_SEL_SW_56K_TO_VBUS','DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,USB_OVP,PSUOUTPUT,@PSU_OUTPUT_7V_500mA,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[7000, 500]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,USB_OVP,delay,@delay500ms_1,common.delay,500,,5000,,--PASS--,--PASS--,,,,
+,USB_OVP,MEASURE,@USB OVP Protect 7V,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP5_VCHG_USB']}",,5000,,0,10,mV,,,DMM Module
+,USB_OVP,PSUOUTPUT,@5V_500mA,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000, 500]}",,5000,,--PASS--,--PASS--,,,,PSU Module
+,USB_OVP,delay,@delay2000ms_1,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+,USB_OCP,MEASURE,@VCHG_USB Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP5_VCHG_USB']}",,5000,,4850,5150,mV,,,DMM Module
+,USB_OCP,ELOAD_ENABLE,CH0_450MA,common.rpc_call,"{'func':'mixdevice.enableEload', 'args':[0, 425]}",,5000,,--PASS--,--PASS--,,,,ELOAD Module
+,USB_OCP,RELAY_CONNECT,ELOAD_SEL_SW_ELOAD_TP5_VCHG_USB,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_TP5_VCHG_USB']}",,5000,,--PASS--,--PASS--,,,,
+,USB_OCP,delay,@delay1000ms,common.delay,1000,,5000,,--PASS--,--PASS--,,,,
+,USB_OCP,MEASURE,@VCHG_USB Voltage_After_Load,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP5_VCHG_USB']}",,5000,,0,10,mV,,,DMM Module
+,USB_OCP,ELOAD_DISENABLE,CH0_450MA,common.rpc_call,"{'func':'mixdevice.enableEload', 'args':[0, 0]}",,5000,,--PASS--,--PASS--,,,,ELOAD Module
+,USB_OCP,RELAY_DISCONNECT,ELOAD_SEL_SW_ELOAD_TP5_VCHG_USB,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_TP5_VCHG_USB','DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,USB_OCP,delay,@Release_delay3000ms,common.delay,3000,,5000,,--PASS--,--PASS--,,,,
+
+,TEARDOWN,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+
+
+
+
+
+
+
+
+

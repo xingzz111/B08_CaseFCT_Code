@@ -1,0 +1,62 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,Fixture,Info,@Station_ID,common.station_id,,,5000,,,,,,,
+,MES,UOP,@Check_uop,common.check_uop,[[[scanned_sn]]],,5000,,,,,,Y,MES
+,MES,GET_INFO,GET_FLASH_SIZE,common.check_fw_config,[[[scanned_sn]]],[[FLASH_SIZE]],5000,,,,,,Y,
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+,Fixture,RUN_BMT,@GET_BMT_VERSION,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool (\w+.\w+.\w+-\w+\+\w+)'}",,20000,,4.0.0-1225+ff003d5,4.0.0-1225+ff003d5,,,,BMT
+
+,OPEN_SHORT,SHORT_CHECK,@USBC_UART_RX_IN,common.rpc_call,"{'func':'mixdevice.open_short_test', 'args':['USBC_UART_RX_IN']}",,5000,,0,5,ohm,,,
+,OPEN_SHORT,SHORT_CHECK,@USBC_UART_TX_IN,common.rpc_call,"{'func':'mixdevice.open_short_test', 'args':['USBC_UART_TX_IN']}",,5000,,0,5,ohm,,,
+,OPEN_SHORT,SHORT_CHECK,@USBC_CON_GND,common.rpc_call,"{'func':'mixdevice.open_short_test', 'args':['USBC_CON_GND']}",,5000,,0,5,ohm,,,
+,OPEN_SHORT,SHORT_CHECK,@USBC_VBUS_IN,common.rpc_call,"{'func':'mixdevice.open_short_test', 'args':['USBC_VBUS_IN']}",,5000,,0,5,ohm,,,
+,OPEN_SHORT,SHORT_CHECK,@USBC_CC1,common.rpc_call,"{'func':'mixdevice.open_short_test', 'args':['USBC_CC1']}",,5000,,0,5,ohm,,,
+,OPEN_SHORT,SHORT_CHECK,@USBC_CC2,common.rpc_call,"{'func':'mixdevice.open_short_test', 'args':['USBC_CC2']}",,5000,,0,5,ohm,,
+,OPEN_SHORT,SHORT_CHECK,@USBC_DP_IN,common.rpc_call,"{'func':'mixdevice.open_short_test', 'args':['USBC_DP_IN']}",,5000,,0,5,ohm,,,
+,OPEN_SHORT,SHORT_CHECK,@USBC_DM_IN,common.rpc_call,"{'func':'mixdevice.open_short_test', 'args':['USBC_DM_IN']}",,5000,,0,5,ohm,,,
+,OPEN_SHORT,SHORT_CHECK,@USBC_SBU,common.rpc_call,"{'func':'mixdevice.open_short_test', 'args':['USBC_SBU']}",,5000,,0,5,ohm,,,
+,OPEN_SHORT,SHORT_CHECK,@USBC_SWDIO_IN,common.rpc_call,"{'func':'mixdevice.open_short_test', 'args':['USBC_SWDIO_IN']}",,5000,,0,5,ohm,,,
+,OPEN_SHORT,SHORT_CHECK,@USBC_SWDCLK_IN,common.rpc_call,"{'func':'mixdevice.open_short_test', 'args':['USBC_SWDCLK_IN']}",,5000,,0,5,ohm,,,
+,OPEN_SHORT,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,--PASS--,--PASS--,,,,
+
+,FWDL,RELAY_CONNECT,@PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT']}",,5000,,--PASS--,--PASS--,,,,
+,FWDL,delay,@delay100ms_1,common.delay,100,,5000,,--PASS--,--PASS--,,,,
+,FWDL,CHARGE_OUTPUT,@5V_100MA,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000,100]}",,5000,,--PASS--,--PASS--,,,,PSU
+,FWDL,delay,@delay1000ms_2,common.delay,1000,,5000,,--PASS--,--PASS--,,,,
+,FWDL,RELAY_CONNECT,@SWD_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['SWD_SEL_SW']}",,5000,,--PASS--,--PASS--,,,,
+,FWDL,ERASE,@ERASE_STM32,common.erase_firmware_STLinkTool,[[FLASH_SIZE]],,50000,,--PASS--,--PASS--,,,,STLink
+,FWDL,PROGRAM,@PROGRAM_STM32,common.program_firmware_STLinkTool,[[FLASH_SIZE]],,50000,,--PASS--,--PASS--,,,,STLink
+,FWDL,delay,@delay3000ms,common.delay,3000,,5000,,--PASS--,--PASS--,,,,
+
+,DUTInfo,writeSN,@writeSN,common.writeSN,[[[scanned_sn]]],,30000,E,,,,,,BMT
+,DUTInfo,delay,delay100ms_1,common.delay,100,,5000,R,--PASS--,--PASS--,,,,
+,DUTInfo,POWER,@POWER_CYCLE,common.powerCycle,,,10000,,--PASS--,--PASS--,,,,
+,DUTInfo,RELAY_CONNECT,USB_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_SEL_SW']}",,5000,,--PASS--,--PASS--,,,,
+
+,UART,RELAY_CONNECT,UART_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['UART_SEL_SW']}",,5000,,--PASS--,--PASS--,,,,
+,UART,delay,delay1000ms_3,common.delay,1000,,5000,,--PASS--,--PASS--,,,,
+,UART,SEND_READ,@VR,common.uart_test,"{'cmd':'vr', 'expectKeyword':'SpitfireCoreServices'}",,15000,,125.3.3+g2e89646,125.3.3+g2e89646,,,,UART
+
+,DUTInfo,CHECK,@CHECK_USB,common.checkUSB,,,30000,,--PASS--,--PASS--,,,,
+,DUTInfo,JSON_BMT_RUN,@READ_DUT_INFO,common.exec_json_cmd,"{'file_name':'Get_DUT_INFO.json', 'cmd_args': [[[scanned_sn]]]}",,5000,,--PASS--,--PASS--,,,,BMT
+,DUTInfo,JSON_GET_RESULT,@WRITE_HW_VERSION,common.get_json_result,"{'result_key_word':'Status HWRevision=(\w+\.\w+)'}",,5000,,C1.5,C1.5,,,,BMT
+,DUTInfo,JSON_GET_RESULT,@CC_TX_RX_TEST,common.get_json_result,"{'result_key_word':'Transfer=PASS C l:0b t:00 r:00 c:00 (\w+\:\w+ \w+\:\w+ \w+\:\w+ \w+\:\w+)'}",,5000,,txd:426f rxd:426f txe:426f rxe:426f,txd:426f rxd:426f txe:426f rxe:426f,,,,BMT
+,DUTInfo,JSON_GET_RESULT,@READ_PCBA_SN,common.get_json_result,"{'result_key_word':'Board SerialNumber=(\w+)'}",[[read_sn]],5000,,,,,,,BMT
+,DUTInfo,SN_COMPARE,@COMPARE_SN,common.compareStr,"[[scanned_sn]]#[[read_sn]]",,5000,,--PASS--,--PASS--,,,,
+,DUTInfo,JSON_GET_RESULT,@GET_HW_REVISION,common.get_json_result,"{'result_key_word':'Status HWRevision=(\w+\.\w+)'}",,5000,,C1.5,C1.5,,,,BMT
+,DUTInfo,JSON_GET_RESULT,@GET_FW_VISION,common.get_json_result,"{'result_key_word':'FirmwareVersion.Status Version=(\w+.\w+.\w+\+\w+)'}",,5000,,0.0.8+g853d550,0.0.8+g853d550,,,,BMT
+,DUTInfo,JSON_GET_RESULT,@CHARGER_I2C_TEST,common.get_json_result,"{'result_key_word':'I2CCheck.Status Status=0 (\w+\=\w+)'}",,5000,,StatusQualifier=34,StatusQualifier=34,,,,BMT
+
+
+,DUTInfo,CHECK,CHECK_TEST_RESULT,common.get_testResult,[[[result]]],{{TEST_RESULT}},30000,,,,,,,
+
+,DUTInfo,JSON_BMT_RUN,@WRITE_TEST_STATION_FLAG_PASS,common.exec_json_cmd,"{'file_name':'Write_FWDL_PASS.json', 'cmd_args': [[[scanned_sn]]]}",,5000,,--PASS--,--PASS--,,TEST_RESULT == PASS,,BMT
+,DUTInfo,JSON_BMT_RUN,@WRITE_TEST_STATION_FLAG_FAIL,common.exec_json_cmd,"{'file_name':'Write_FWDL_FAIL.json', 'cmd_args': [[[scanned_sn]]]}",,5000,,--PASS--,--PASS--,,TEST_RESULT == FAIL,,BMT
+
+
+,DUTInfo,JSON_GET_RESULT,@JSON_GET_WRITE_TEST_STATION_FLAG_PASS,common.get_json_result,"{'result_key_word':'TestStation.Status (\w+\=\w+)'}",,5000,,Station1Status=Pass,Station1Status=Pass,,TEST_RESULT == PASS,,BMT
+,DUTInfo,JSON_GET_RESULT,@JSON_GET_READ_TEST_STATION_FLAG_PASS,common.get_json_result,"{'result_key_word':'TestStation.Status (\w+\=\w+)'}",,5000,,Station1Status=Pass,Station1Status=Pass,,TEST_RESULT == PASS,,BMT
+,DUTInfo,JSON_GET_RESULT,@JSON_GET_WRITE_TEST_STATION_FLAG_FAIL,common.get_json_result,"{'result_key_word':'TestStation.Status (\w+\=\w+)'}",,5000,,Station1Status=None,Station1Status=None,,TEST_RESULT == FAIL,,BMT
+,DUTInfo,JSON_GET_RESULT,@JSON_GET_READ_TEST_STATION_FLAG_FAIL,common.get_json_result,"{'result_key_word':'TestStation.Status (\w+\=\w+)'}",,5000,,Station1Status=None,Station1Status=None,,TEST_RESULT == FAIL,,BMT
+,DUTInfo,JSON_GET_RESULT,@POWER_OFF,common.get_json_result,"{'result_key_word':'Control.(\w+\.\w+)'}",,5000,,Power.Result,Power.Result,,,,BMT
+,DUTInfo,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,--PASS--,--PASS--,,,,

@@ -1,0 +1,39 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,Fixture,Info,@Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,RUN_BMT,@GET_BMT_VERSION,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool BMT:\s*(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,5.1.0-1286+e381751,5.1.0-1286+e381751,,,,BMT
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+
+,POWER,POWER,@POWER_ON,common.powerOn,,,5000,,,,,,,
+
+,OPAMP1,ADC_READ,@OPAMP1_VOUT_ADC_WITHOUT_ELOAD,common.adcRead,[[[scanned_sn]]],,15000,,,,mV,,,BMT
+,OPAMP1,RUN_BMT,@OUTPUT_5V,common.run_bmt_cmd,"{'cmd_key':'OUTPUT_5V', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'CaseDebug.ChargerInterconnectVoltControl.Status Id=(\w+\s+\w+\=\w+)'}",,5000,,CHG_VOLT_EN Level=0,CHG_VOLT_EN Level=0,,,,BMT
+,OPAMP1,delay,delay1000ms,common.delay,1000,,5000,,--PASS--,--PASS--,,,,
+,OPAMP1,RELAY_CONNECT,@ELOAD_SEL_SW_ELOAD_POGO_R,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_POGO_R']}",,5000,,--PASS--,--PASS--,,,,
+,OPAMP1,ELOAD_ENABLE,CH0_100MA,common.rpc_call,"{'func':'mixdevice.enableEload', 'args':[0, 100]}",,5000,,--PASS--,--PASS--,,,,ELOAD Module
+,OPAMP1,MEASURE_CURRENT,@Eload_MEASURE_CURRENT,common.measureEload,"{'ch':0, 'count':15}",,5000,,96,104,mA,,,ELOAD Module
+,OPAMP1,ADC_READ,@OPAMP1_VOUT__ADC,common.adcRead,[[[scanned_sn]]],,15000,,,,mV,,,BMT
+
+
+,OPAMP2,ADC_READ,@OPAMP2_VOUT_ADC_WITHOUT_ELOAD,common.adcRead,[[[scanned_sn]]],,15000,,,,mV,,,BMT
+,OPAMP2,RUN_BMT,@OUTPUT_5V,common.run_bmt_cmd,"{'cmd_key':'OUTPUT_5V', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'CaseDebug.ChargerInterconnectVoltControl.Status Id=(\w+\s+\w+\=\w+)'}",,5000,,CHG_VOLT_EN Level=0,CHG_VOLT_EN Level=0,,,,BMT
+,OPAMP2,delay,delay1000ms,common.delay,1000,,5000,,--PASS--,--PASS--,,,,
+,OPAMP2,RELAY_CONNECT,@ELOAD_SEL_SW_ELOAD_POGO_L,common.rpc_call,"{'func':'mixdevice.relay', 'args':['ELOAD_SEL_SW_ELOAD_POGO_L']}",,5000,,--PASS--,--PASS--,,,,
+,OPAMP2,ELOAD_ENABLE,CH1_100MA,common.rpc_call,"{'func':'mixdevice.enableEload', 'args':[1, 100]}",,5000,,--PASS--,--PASS--,,,,ELOAD Module
+,OPAMP2,MEASURE_CURRENT,@Eload_MEASURE_CURRENT,common.measureEload,"{'ch':1, 'count':15}",,5000,,96,104,mA,,,ELOAD Module
+,OPAMP2,ADC_READ,@OPAMP2_VOUT__ADC,common.adcRead,[[[scanned_sn]]],,15000,,,,mV,,,BMT
+
+
+
+,TEARDOWN,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+
+
+
+
+
+
+
+
+

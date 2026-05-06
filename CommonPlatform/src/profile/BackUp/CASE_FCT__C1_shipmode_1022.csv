@@ -1,0 +1,13 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,XXXXXXXXXXXXX2900879XXXXXX,XXXXXXXXXXXXX2900879XXXXXX,,,,
+,MES,UOP,@Get_SN_MES_INFO,common.check_uop,[[[scanned_sn]]],,5000,,,,,,Y,MES
+,Fixture,RUN_BMT,@Get_BMT_Version,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool BMT:\s*(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,5.1.0-1286+e381751,5.1.0-1286+e381751,,,,BMT
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+,VOLTAGE_TEST,delay,delay2000ms,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+,SHIP_MODE,POWER,@Ship mode,common.enterShipMode,[[[scanned_sn]]],,15000,,--PASS--,--PASS--,,,,
+Y,SHIP_MODE,delay,@Disconnect_USB_Delay_2000ms,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+,SHIP_MODE,RELAY_DISCONNECT,@Disconnect_USB_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_SEL_SW', 'DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,SHIP_MODE,delay,delay5000ms,common.delay,5000,,5000,,--PASS--,--PASS--,,,,
+,SHIP_MODE,MEASURE_CURRENT,@Ship_mode_Battery_Current,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '1ma']}",,5000,,0.2,0.5,mA,,,PSU Module
+,SHIP_MODE,delay,delay2000ms,common.delay,200000,,500000,,--PASS--,--PASS--,,,,
+,TEARDOWN,reset,@DUT_Power_OFF,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,

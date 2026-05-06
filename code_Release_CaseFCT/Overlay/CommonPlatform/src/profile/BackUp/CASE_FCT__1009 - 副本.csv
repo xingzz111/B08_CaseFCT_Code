@@ -1,0 +1,54 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,Fixture,Info,@Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,RUN_BMT,@GET_BMT_VERSION,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool BMT:\s*(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,5.1.0-1286+e381751,5.1.0-1286+e381751,,,,BMT
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+,POWER_ON,MEASURE,@NRST rising width,common.risingWidth,,,5000,,,,mS,,,
+,POWER_ON,delay,@delay2000ms,common.delay,5000,,15000,,--PASS--,--PASS--,,,,
+,POWER_ON,MEASURE_CURRENT,@CURRENT,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['charger', '500ma']}",,5000,,,,mA,,,
+
+,VOLTAGE_TEST,RELAY_CONNECT,DMM_VIN1_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['DMM_VIN1_SEL_SW']}",,5000,,--PASS--,--PASS--,,,,
+,VOLTAGE_TEST,MEASURE,@VBUS Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP10_VBUS_5V']}",,5000,,4900,5100,mV,,,
+,VOLTAGE_TEST,MEASURE,@VCHG_USB Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP5_VCHG_USB']}",,5000,,4900,5100,mV,,,
+,VOLTAGE_TEST,MEASURE,@VBUS_DET Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP52_14_VBUS_DET']}",,5000,,2600,3000,mV,,,
+,VOLTAGE_TEST,MEASURE,@VBUS_5V,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP10_VBUS_5V']}",,5000,,4900,5100,mV,,,
+,VOLTAGE_TEST,MEASURE,@VLDO_3V3 Voltage tp13,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP13_VLDO_3V3']}",,5000,,3200,3400,mV,,,
+,VOLTAGE_TEST,MEASURE,@VLDO_3V3 Voltage tp31,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP31_VLDO_3V3']}",,5000,,3200,3400,mV,,,
+,VOLTAGE_TEST,MEASURE,@LDO_1V8_EN Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP70_41_LDO_1V8_EN']}",,5000,,3200,3400,mV,,,
+,VOLTAGE_TEST,MEASURE,@VLDO_1V8_1 Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP72_VLDO_1V8_1']}",,5000,,1400,1800,mV,,,
+,VOLTAGE_TEST,MEASURE,@VLDO_1V8_2 Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP71_VLDO_1V8_2']}",,5000,,1400,1800,mV,,,
+
+
+,USB_OVP,PSUOUTPUT,@7V_500mA,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[7000, 500]}",,5000,,--PASS--,--PASS--,,,,
+,USB_OVP,delay,@delay500ms_1,common.delay,500,,5000,,--PASS--,--PASS--,,,,
+,USB_OVP,MEASURE,@USB OVP Protect 7V,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP5_VCHG_USB']}",,5000,,,,mV,,,
+,USB_OVP,PSUOUTPUT,@5V_500mA,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000, 500]}",,5000,,--PASS--,--PASS--,,,,
+,USB_OVP,delay,@delay2000ms_1,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+
+
+
+,VOLTAGE_TEST,RELAY_CONNECT,@RELAY_CONNECT_USB_CC1_SEL_SW_56K_TO_VBUS,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_CC1_SEL_SW_56K_TO_VBUS']}",,5000,,--PASS--,--PASS--,,,,
+,VOLTAGE_TEST,MEASURE,@USB CC1 detect,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP47_CC1']}",,5000,,4950,5050,mV,,,
+,VOLTAGE_TEST,RELAY_CONNECT,@RELAY_CONNECT_USB_CC2_SEL_SW_56K_TO_VBUS,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_CC2_SEL_SW_56K_TO_VBUS']}",,5000,,--PASS--,--PASS--,,,,
+,VOLTAGE_TEST,MEASURE,@USB CC2 detect,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP48_CC2']}",,5000,,4950,5050,mV,,,
+
+,DUTInfo,RUN_BMT,@Read PCBA SN,common.run_bmt_cmd,"{'cmd_key':'READ_PCBA_SN', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Board SerialNumber=(\w+)'}",[[read_sn]],,5000,,,,,,
+,DUTInfo,SN_COMPARE,@CHECK_DUT_SN,common.compareStr,"[[scanned_sn]]#[[read_sn]]",,5000,,,,,,,
+,DUTInfo,RUN_BMT,@Read_Station_Flag,common.run_bmt_cmd,"{'cmd_key':'READ_TEST_STATION_FLAG', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Status (\w+)Status=Pass'}",,5000,,,,,,,
+,DUTInfo,RUN_BMT,@Firmware Version Check,common.run_bmt_cmd,"{'cmd_key':'GET_FW_VISION', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'FirmwareVersion.Status Version=(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,,,,,,
+,DUTInfo,RUN_BMT,@Read_HW_Version,common.run_bmt_cmd,"{'cmd_key':'GET_HW_REVISION', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Status HWRevision=(\w+)'}",,5000,,,,,,,
+,DUTInfo,RUN_BMT,@Charger_Int_States,common.run_bmt_cmd,"{'cmd_key':'CHARGER_INT_STATUS', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Status HWRevision=(\w+)'}",,5000,,,,,,,
+
+
+
+,TEARDOWN,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,18 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,Fixture,Info,Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,Info,Vendor_ID,common.vendor_id,,,5000,,OSENS,OSENS,,,,
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,,,,,,,,
+,Fixture,RUN_BMT,GET_VERSION,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool (\w+.\w+.\w+-\w+\+\w+)'}",,5000,,,,,,,
+
+,FWDL,RELAY_CONNECT,PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT']}",,5000,,,,,,,
+,FWDL,delay,delay1000ms_1,common.delay,1000,,5000,,,,,,,
+,FWDL,CHARGE_OUTPUT,5V_100MA,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000,100]}",,5000,,,,,,,
+,FWDL,delay,delay1000ms_2,common.delay,1000,,5000,,,,,,,
+,UART,RELAY_CONNECT,UART_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['UART_SEL_SW']}",,5000,,,,,,,
+,UART,delay,delay1000ms_3,common.delay,1000,,5000,,,,,,,
+,DUTInfo,SEND_READ,VR,common.uart_test,"{'cmd':'vr', 'expectKeyword':'SpitfireCoreServices'}",,15000,,,,,,,
+,DUTInfo,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,,,,,,,,
+
+
+

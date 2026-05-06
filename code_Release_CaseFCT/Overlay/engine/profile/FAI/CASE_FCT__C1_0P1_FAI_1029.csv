@@ -1,0 +1,21 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,MES,UOP,@Get_SN_MES_INFO,common.check_uop,[[[scanned_sn]]],,5000,,,,,,Y,MES
+,Fixture,RUN_BMT,@Get_BMT_Version,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool BMT:\s*(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,5.1.0-1286+e381751,5.1.0-1286+e381751,,,,BMT
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+,DUTInfo,POWER,POWER_CYCLE,common.powerCycle,,,15000,,--PASS--,--PASS--,,,,
+,DUTInfo,RUN_BMT,@Read_PCBA_SN,common.run_bmt_cmd,"{'cmd_key':'READ_PCBA_SN', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Board SerialNumber=(\w+)'}",[[read_sn]],,5000,,,,,,BMT
+,DUTInfo,RUN_BMT,@Read_Station_Flag,common.run_bmt_cmd,"{'cmd_key':'READ_TEST_STATION_FLAG', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Manufacturing.TestStation.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,Station1Status=Pass Station2Status=Pass,Station1Status=Pass Station2Status=Pass,,,,BMT
+,DUTInfo,RUN_BMT,@Firmware_Version_Check,common.run_bmt_cmd,"{'cmd_key':'GET_FW_VISION', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'FirmwareVersion.Status Version=(\w+.\w+.\w+\+\w+)'}",,5000,,0.0.2+gaff5bed,0.0.2+gaff5bed,,,,BMT
+,DUTInfo,RUN_BMT,@Read_HW_Version,common.run_bmt_cmd,"{'cmd_key':'GET_HW_REVISION', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Status HWRevision=(\w+)'}",,5000,,C1,C1,,,,BMT
+,DUTInfo,RUN_BMT,@Charger_Int_States,common.run_bmt_cmd,"{'cmd_key':'CHARGER_INT_STATUS', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+=\w+\s+\w+=\w+)'}",,5000,,GPIONum=2 Level=High,GPIONum=2 Level=High,,,,BMT
+,DUTInfo,RUN_BMT,@Charger_I2C_test,common.run_bmt_cmd,"{'cmd_key':'CHARGER_I2C_TEST', 'cmd_args': [[[scanned_sn]]], 'Timeout':10000, 'parse_pattern':'Manufacturing.I2CCheck.Status Status=0 (\w+\=\w+)'}",,5000,,StatusQualifier=72,StatusQualifier=72,,,,
+
+
+,WLSS,INIT,Wireless_charging_Init,common.wirelessChargingInit,,,15000,,--PASS--,--PASS--,,,,WIRELESS Module
+,WLSS,delay,delay5s,common.delay,5000,,5000,,--PASS--,--PASS--,,,,
+,WLSS,RUN_BMT,@Wireless_Charger_I2C_test,common.chargerI2cTest,[[[scanned_sn]]],,5000,,StatusQualifier=32,StatusQualifier=32,,,,BMT
+
+
+,TEARDOWN,reset,@DUT_Power_OFF,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,--PASS--,--PASS--,,,,

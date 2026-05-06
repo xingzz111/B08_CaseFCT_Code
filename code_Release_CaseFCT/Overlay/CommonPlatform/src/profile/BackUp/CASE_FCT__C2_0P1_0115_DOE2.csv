@@ -1,0 +1,50 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,MES,UOP,@Get_SN_MES_INFO,common.check_uop,[[[scanned_sn]]],,5000,,,,,,Y,MES
+,Fixture,RUN_BMT,@Get_BMT_Version,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool BMT:\s*(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,5.3.0-1384+a170927,5.3.0-1384+a170927,,,,BMT
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+,LED_TEST,POWER,POWER_CYCLE,common.powerCycleBattery,[[[scanned_sn]]],,15000,,--PASS--,--PASS--,,,,
+,LED_TEST,RUN_JSON_BMT,@Set_LED_Brightness_INFO,common.exec_json_cmd,"{'file_name':'Set_LED_Brightness_127.json', 'cmd_args': [[[scanned_sn]]]}",,5000,,--PASS--,--PASS--,,,,BMT
+,LED_TEST,READ_JSON_BMT_RESULT,@SET_LED_CASE_WHITE_127,common.get_json_result,"{'result_key_word':'Manufacturing.LedAttribute.Status (\w+\=\w+\s+\w+\=\w+\s+\w+\=\w+)'}",,10000,,LedID=1 LedAttributeID=1 LedAttributeValue=127,LedID=1 LedAttributeID=1 LedAttributeValue=127,,,,BMT
+,LED_TEST,READ_JSON_BMT_RESULT,@SET_LED_CASE_AMBER_127,common.get_json_result,"{'result_key_word':'Manufacturing.LedAttribute.Status (\w+\=\w+\s+\w+\=\w+\s+\w+\=\w+)'}",,10000,,LedID=2 LedAttributeID=1 LedAttributeValue=127,LedID=2 LedAttributeID=1 LedAttributeValue=127,,,,BMT
+,LED_TEST,READ_JSON_BMT_RESULT,@SET_LED_CASE_BLUE_127,common.get_json_result,"{'result_key_word':'Manufacturing.LedAttribute.Status (\w+\=\w+\s+\w+\=\w+\s+\w+\=\w+)'}",,10000,,LedID=3 LedAttributeID=1 LedAttributeValue=127,LedID=3 LedAttributeID=1 LedAttributeValue=127,,,,BMT
+,LED_TEST,READ_JSON_BMT_RESULT,@CASE_RESET,common.get_json_result,"{'result_key_word':'Control.Reset.(\w+)'}",,10000,,Result,Result,,,,BMT
+,LED_TEST,delay,delay6s,common.delay,6000,,50000,,--PASS--,--PASS--,,,,
+,LED_CASE_BLUE,RUN_BMT,@SET_LED_CASE_BLUE_ON,common.run_bmt_cmd,"{'cmd_key':'SET_LED_CASE_BLUE_ON', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.LEDs.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,PatternID=LED3 Priority=0,PatternID=LED3 Priority=0,,,,BMT
+,LED_CASE_BLUE,delay,delay0.5s,common.delay,500,,5000,R,--PASS--,--PASS--,,,,
+,LED_CASE_BLUE,LED,@LED_TEST_BLUE,common.led_test,"{'color':'blue'}",[[CASE_BLUE]],10000,,,,,,,LED Module
+,LED_CASE_BLUE,CASE_BLUE_R,@CASE_BLUE_R,common.getValueForLED,[[[CASE_BLUE]]],,5000,,1,25,,,,
+,LED_CASE_BLUE,CASE_BLUE_G,@CASE_BLUE_G,common.getValueForLED,[[[CASE_BLUE]]],,5000,,10,40,,,,
+,LED_CASE_BLUE,CASE_BLUE_B,@CASE_BLUE_B,common.getValueForLED,[[[CASE_BLUE]]],,5000,,250,255,,,,
+,LED_CASE_BLUE,CASE_BLUE_LUX,@CASE_BLUE_I,common.getValueForLED,[[[CASE_BLUE]]],,5000,,,,,,,
+
+,LED_CASE_WHITE,RUN_BMT,@SET_LED_CASE_WHITE_ON,common.run_bmt_cmd,"{'cmd_key':'SET_LED_CASE_WHITE_ON', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.LEDs.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,PatternID=LED1 Priority=0,PatternID=LED1 Priority=0,,,,BMT
+,LED_CASE_WHITE,delay,delay0.5s,common.delay,500,,5000,R,--PASS--,--PASS--,,,,
+,LED_CASE_WHITE,LED,@LED_TEST_WHITE,common.led_test,"{'color':'white'}",[[CASE_WHITE]],10000,,,,,,,LED Module
+,LED_CASE_WHITE,CASE_WHITE_R,@CASE_WHITE_R,common.getValueForLED,[[[CASE_WHITE]]],,5000,,80,255,,,,
+,LED_CASE_WHITE,CASE_WHITE_G,@CASE_WHITE_G,common.getValueForLED,[[[CASE_WHITE]]],,5000,,90,255,,,,
+,LED_CASE_WHITE,CASE_WHITE_B,@CASE_WHITE_B,common.getValueForLED,[[[CASE_WHITE]]],,5000,,250,255,,,,
+,LED_CASE_WHITE,CASE_WHITE_LUX,@CASE_WHITE_I,common.getValueForLED,[[[CASE_WHITE]]],,5000,,,,,,,
+
+,LED_CASE_AMBER,RUN_BMT,@SET_LED_CASE_AMBER_ON,common.run_bmt_cmd,"{'cmd_key':'SET_LED_CASE_AMBER_ON', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.LEDs.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,PatternID=LED2 Priority=0,PatternID=LED2 Priority=0,,,,BMT
+,LED_CASE_AMBER,delay,delay0.5s,common.delay,500,,5000,R,--PASS--,--PASS--,,,,
+,LED_CASE_AMBER,LED,@LED_TEST_AMBER,common.led_test,"{'color':'amber'}",[[CASE_AMBER]],10000,,,,,,,LED Module
+,LED_CASE_AMBER,CASE_AMBER_R,@CASE_AMBER_R,common.getValueForLED,[[[CASE_AMBER]]],,5000,,250,255,,,,
+,LED_CASE_AMBER,CASE_AMBER_G,@CASE_AMBER_G,common.getValueForLED,[[[CASE_AMBER]]],,5000,,45,235,,,,
+,LED_CASE_AMBER,CASE_AMBER_B,@CASE_AMBER_B,common.getValueForLED,[[[CASE_AMBER]]],,5000,,1,25,,,,
+,LED_CASE_AMBER,CASE_AMBER_LUX,@CASE_AMBER_I,common.getValueForLED,[[[CASE_AMBER]]],,5000,,,,,,,
+
+,WRITE_STATION_FLAG,POWER,@POWER_CYCLE,common.powerCycleShipMode,,,15000,,--PASS--,--PASS--,,,,
+,WRITE_STATION_FLAG,GET,TEST_INFO,common.get_testResult,[[[result]]],[[TEST_RESULT]],5000,,,,,,,
+,WRITE_STATION_FLAG,RUN_BMT,@Write_test_station_flag,common.writeStationFlag,"{'testResult':[[[TEST_RESULT]]], 'cmd_args': [[[scanned_sn]]]}",,5000,,Station2Status=Pass,Station2Status=Pass,,,,BMT
+,READ_STATION_FLAG,RUN_BMT,@Read_test_station_flag,common.run_bmt_cmd,"{'cmd_key':'READ_TEST_STATION_FLAG', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Station1Status=Pass (\w+\=\w+)'}",,5000,,Station2Status=Pass,Station2Status=Pass,,,,BMT
+
+,SHIP_MODE,POWER,@Ship mode,common.enterShipMode,[[[scanned_sn]]],,15000,,--PASS--,--PASS--,,,,
+,SHIP_MODE,delay,@Disconnect_USB_Delay_2s,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+,SHIP_MODE,RELAY_DISCONNECT,@Disconnect_USB_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['USB_SEL_SW', 'DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,SHIP_MODE,delay,delay8s,common.delay,8000,,10000,,--PASS--,--PASS--,,,,
+,SHIP_MODE,MEASURE_CURRENT,@Ship_mode_Battery_Current,common.measureShipMode,,,5000,,1,8,uA,,,PSU Module
+,SHIP_MODE,RELAY_DISCONNECT,RELAY_DISCONNECT_PP24V_TO_MAGNET,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PP24V_TO_MAGNET', 'DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+
+,TEARDOWN,reset,@DUT_Power_OFF,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,--PASS--,--PASS--,,,,

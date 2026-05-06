@@ -1,0 +1,18 @@
+{
+    "project": "EXAMPLE_CONFIG",
+    "mes_config": {
+        "product": "B06-FPC",
+        "station_type": "FPC-FCT",
+        "station_id": "E4_2F_B06_CFPC_FCT_01",
+        "station_num": "1",
+        "tcmd": "GET_BS06_MACCODE",
+        "logfile": "D:\\vault\\StationLog\\mes",
+        "url": "http://10.32.23.123/MESWebService/webservice.asmx/",
+        "header": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept-Encoding": "gzip, deflate"
+        }
+    },
+    "enable_mes": false,
+    "mes_skip": false
+}

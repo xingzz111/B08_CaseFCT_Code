@@ -1,0 +1,47 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,Fixture,Info,@Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,RUN_BMT,@GET_BMT_VERSION,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool BMT:\s*(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,5.1.0-1286+e381751,5.1.0-1286+e381751,,,,BMT
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+,POGOR,POWER,@POWER_ON,common.powerOn,,,5000,,,,mS,,,
+,POGOR,delay,@delay5000ms,common.delay,5000,,5000,,--PASS--,--PASS--,,,,
+,POGOR,MEASURE_CURRENT,@CURRENT,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['charger', '500ma']}",,5000,,,,mA,,,
+
+,POGOR,RELAY_CONNECT,DMM_VIN1_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['DMM_VIN1_SEL_SW']}",,5000,,--PASS--,--PASS--,,,,
+
+,POGOR,RUN_BMT,@Set the 42_1V8_Mos_EN_1 GPIO to LOW,common.run_bmt_cmd,"{'cmd_key':'42_1V8_MOS_EN1_LOW', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+=\w+\s\w+=\w+)'}",,5000,,GPIONum=17 Level=Low,GPIONum=17 Level=Low,,,,
+,POGOR,RUN_BMT,@Set the 42_1V8_Mos_EN_2 GPIO to LOW,common.run_bmt_cmd,"{'cmd_key':'42_1V8_MOS_EN2_LOW', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+=\w+\s\w+=\w+)'}",,5000,,GPIONum=18 Level=Low,GPIONum=18 Level=Low,,,,
+,POGOR,delay,@delay500ms,common.delay,500,,5000,,--PASS--,--PASS--,,,,
+,POGOR,VOLT_MEASURE,@POGOR+_1V8_Mos _EN_L,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TP62_POGOR_P_SNS', 0.2, 3]}",,5000,,250,310,mV,,,
+,POGOL,VOLT_MEASURE,@PGOGL+_1V8_Mos _EN_L,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TP33_PGOGL_P_SNS', 0.2, 3]}",,5000,,250,310,mV,,,
+,POGOR,RUN_BMT,@Set the BUD_RESET GPIO to HIGH,common.run_bmt_cmd,"{'cmd_key':'BUD_RESET_GPIO_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+=\w+\s\w+=\w+)'}",,5000,,GPIONum=5 Level=High,GPIONum=5 Level=High,,,,
+,POGOR,delay,@delay500ms_1,common.delay,500,,5000,,--PASS--,--PASS--,,,,
+,POGOR,VOLT_MEASURE,@POGOR+_BUD_RESET_H,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TP62_POGOR_P_SNS', 0.2, 3]}",,5000,,150,250,mV,,,
+,POGOL,VOLT_MEASURE,@PGOGL+_BUD_RESET_H,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TP33_PGOGL_P_SNS', 0.2]}",,5000,,150,250,mV,,,
+,POGOL,RUN_BMT,@Set the BUD_RESET GPIO to LOW,common.run_bmt_cmd,"{'cmd_key':'BUD_RESET_GPIO_LOW', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+=\w+\s\w+=\w+)'}",,5000,,GPIONum=5 Level=Low,GPIONum=5 Level=Low,,,,
+
+
+
+,POGOR,RUN_BMT,@Set the 42_1V8_Mos_EN_1 GPIO to HIGH,common.run_bmt_cmd,"{'cmd_key':'42_1V8_MOS_EN1_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+=\w+\s\w+=\w+)'}",,5000,,GPIONum=17 Level=High,GPIONum=17 Level=High,,,,
+,POGOR,RUN_BMT,@Set the 42_1V8_Mos_EN_2 GPIO to HIGH,common.run_bmt_cmd,"{'cmd_key':'42_1V8_MOS_EN2_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+=\w+\s\w+=\w+)'}",,5000,,GPIONum=18 Level=High,GPIONum=18 Level=High,,,,
+,POGOR,delay,@delay500ms_2,common.delay,500,,5000,,--PASS--,--PASS--,,,,
+,POGOR,VOLT_MEASURE,@POGOR+_1V8_Mos _EN_H,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TP62_POGOR_P_SNS', 0.2, 3]}",,5000,,-5,5,mV,,,
+,POGOL,VOLT_MEASURE,@POGOL+_1V8_Mos _EN_H,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TP33_PGOGL_P_SNS', 0.2, 3]}",,5000,,-5,5,mV,,,
+
+
+,Charging,RUN_BMT,@Set the JEITA_IO GPIO to HIGH,common.run_bmt_cmd,"{'cmd_key':'NTC_JEITA_IO_TO_HIGH', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+=\w+\s\w+=\w+)'}",,5000,,GPIONum=6 Level=High,GPIONum=6 Level=High,,,,
+,Charging,VOLT_MEASURE,@Charging NTC_JEITA_IO,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1','7000mv','VOLT_MEAS_MUX_SEL_TP59_NTC_PIN1', 0.2, 3]}",,5000,,,,mV,,,
+
+
+
+,TEARDOWN,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+
+
+
+
+
+
+
+
+

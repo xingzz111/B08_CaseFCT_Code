@@ -1,0 +1,48 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,Fixture,Info,@Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,RUN_BMT,@GET_BMT_VERSION,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool BMT:\s*(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,5.1.0-1286+e381751,5.1.0-1286+e381751,,,,BMT
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+
+
+,WLSS,INIT,@WIRELESS_CHARGING_INIT,common.wirelessChargingInit,,,15000,,,,,,,WIRELESS Module
+,WLSS,delay,@delay3000ms,common.delay,3000,,5000,,--PASS--,--PASS--,,,,
+,WIRELESS_GET_INFO,RUN_JSON_BMT,@Get_WIRELESS_INFO,common.exec_json_cmd,"{'file_name':'Get_Wireless_INFO.json', 'cmd_args': [[[scanned_sn]]]}",,5000,,--PASS--,--PASS--,,,,BMT
+,WLSS_RX_CHIP_ID,READ_JSON_BMT_RESULT,@WLSS_RX_CHIP_ID,common.get_json_result,"{'result_key_word':'StatusQualifier=(\w+)'}",,10000,,3269,3269,,,,BMT
+,WLSS_RX_STATUS,READ_JSON_BMT_RESULT,@WLSS_RX_STATUS,common.get_json_result,"{'result_key_word':'StatusQualifier=(\w+)'}",,10000,,3,3,,,,BMT
+,WLSS_RX_ADC_IOUT,CALCULATE,@IOUT,common.caculateWireless,,,15000,,100,300,mA,,,BMT
+,WLSS_RX_ADC_VOUT,CALCULATE,@VOUT,common.caculateWireless,,,15000,,4900,5200,mV,,,BMT
+,WLSS,RUN_BMT,@wireless_Int_status,common.run_bmt_cmd,"{'cmd_key':'WIRELESS_INT_STATUS', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.GPIO.Status (\w+=\w+\s\w+=\w+)'}",,5000,,,,,,,BMT
+,WLSS,@CHARGE_OUTPUT,5V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[5000, 500]}",,5000,,--PASS--,--PASS--,,,,
+,WLSS,RELAY_CONNECT,@RELAY_CONNECT_PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT', 'CONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,WLSS,delay,@delay2000ms,common.delay,2000,,5000,,--PASS--,--PASS--,,,,
+,WLSS,MEASURE,@PreCharging_TX pad working current,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch0', '7000mv', 'DMM_VIN2_SEL_SW_WIRELESS_CHARGE_CURR', 0.2, 3]}",,5000,,30,80,mA,,,DMM Module
+,WLSS,MEASURE_CURRENT,@PreCharging_WLSS_Battery charging current,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '500ma']}",,5000,,,,mA,,,
+,WLSS,@CHARGE_OUTPUT,0V,common.rpc_call,"{'func':'mixdevice.chargeEnable', 'args':[10, 10]}",,5000,,--PASS--,--PASS--,,,,
+,WLSS,RELAY_DISCONNECT,@DISCONNECT_PSU_VCHG_TO_DUT,common.rpc_call,"{'func':'mixdevice.relay', 'args':['PSU_VCHG_TO_DUT', 'DISCONNECT']}",,5000,,--PASS--,--PASS--,,,,
+,WLSS,delay,@delay3000ms_1,common.delay,3000,,5000,,--PASS--,--PASS--,,,,
+,WLSS,RELAY_CONNECT,DMM_VIN1_SEL_SW,common.rpc_call,"{'func':'mixdevice.relay', 'args':['DMM_VIN1_SEL_SW']}",,5000,,--PASS--,--PASS--,,,,
+,WLSS,CURRENT_MEASURE,@LDO5 Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP77_LDO5', 0.2, 3]}",,5000,,,,mV,,,DMM Module
+,WLSS,CURRENT_MEASURE,@VBUS_5V_WCHG_E,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP10_VBUS_5V', 0.2, 3]}",,5000,,,,mV,,,DMM Module
+,WLSS,CURRENT_MEASURE,@wireless_Int Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP75_WIRELESS_INT', 0.2, 3]}",,5000,,,,mV,,,DMM Module
+,WLSS,CURRENT_MEASURE,@16_wireless_Int Voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP78_16_WIRELESS_INT', 0.2, 3]}",,5000,,,,mV,,,DMM Module
+,WLSS,CURRENT_MEASURE,@36_wireless_Sleep voltage,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP76_36_WIRELESS_SLEEP', 0.2, 3]}",,5000,,,,mV,,,DMM Module
+,WLSS,CALCULATE,@TX pad working Voltage,common.caculateVoltage,,,15000,,6900,8000,mV,,,DMM Module
+,WLSS,MEASURE,@TX pad working current,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch0', '7000mv', 'DMM_VIN2_SEL_SW_WIRELESS_CHARGE_CURR', 0.2, 3]}",,5000,,150,500,mA,,,DMM Module
+,WLSS,MEASURE_CURRENT,@WLSS_Battery charging current,common.rpc_call,"{'func':'mixdevice.measureCurrentByOdin', 'args':['battery', '500ma']}",,5000,,,,mA,,,
+,WLSS,CURRENT_MEASURE,@WCHG_5V,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP81_WCHG_5V', 0.2, 3]}",,5000,,4900,5100,mV,,,DMM Module
+,WLSS,MEASURE,@wireless_EN_L,common.rpc_call,"{'func':'mixdevice.measureByDMM', 'args':['ch1', '7000mv', 'VOLT_MEAS_MUX_SEL_TP74_15_WIRELESS_EN', 0.2, 3]}",,5000,,-50,50,mV,,,DMM Module
+
+
+,TEARDOWN,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+
+
+
+
+
+
+
+
+

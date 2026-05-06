@@ -1,0 +1,28 @@
+{
+    "name": "T002 Spice_Case FCT Station",
+    "description": "T002 WLSS_RX_ADC_IOUT_LSB/WLSS_RX_ADC_IOUT_MSB/WLSS_RX_ADC_VOUT_LSB/WLSS_RX_ADC_VOUT_MSB",
+    "sequence":
+	[
+        {
+            "send": "Manufacturing.I2CCheck.Get 0x30, 1, 1, 0x28", 
+            "expect": ".",
+            "timeout": 5000
+        },
+        {
+            "send": "Manufacturing.I2CCheck.Get 0x30, 1, 1, 0x29",
+            "expect": ".",
+            "timeout": 5000
+        },
+        {
+            "send": "Manufacturing.I2CCheck.Get 0x30, 1, 1, 0x2a", 
+            "expect": ".",
+            "timeout": 5000
+        },
+        {
+            "send": "Manufacturing.I2CCheck.Get 0x30, 1, 1, 0x2b",
+            "expect": ".",
+            "timeout": 5000
+        }
+	]
+}
+

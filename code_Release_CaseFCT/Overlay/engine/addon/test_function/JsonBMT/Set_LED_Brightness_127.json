@@ -1,0 +1,28 @@
+{
+    "name": "T002 Spice_Case FCT Station",
+    "description": "T002 SET_LED_CASE_WHITE_255/SET_LED_CASE_AMBER_255/SET_LED_CASE_BLUE_255/CASE_RESET",
+    "sequence":
+	[
+        {
+            "send": "Manufacturing.LedAttribute.SetGet 1,1,127",
+            "expect": ".",
+            "timeout": 5000
+        },
+        {
+            "send": "Manufacturing.LedAttribute.SetGet 2,1,127",
+            "expect": ".",
+            "timeout": 5000
+        },
+        {
+            "send": "Manufacturing.LedAttribute.SetGet 3,1,127",
+            "expect": ".",
+            "timeout": 5000
+        },
+        {
+            "send": "Control.Reset.Start",
+            "expect": ".",
+            "timeout": 5000
+        }
+	]
+}
+

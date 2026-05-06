@@ -1,0 +1,43 @@
+Disable,Group,SubTestName,SubSubTestName,Function,Input,Output,Timeout,Policy,LowerLimit,UpperLimit,Units,Condition,StopOnFail,Notes
+,Fixture,Info,@Scan_PCBA_SN,common.get_scan_sn,[[scanned_sn]],,5000,,,,,,,
+,Fixture,Info,@Station_ID,common.station_id,,,5000,,,,,,,
+,Fixture,RUN_BMT,@GET_BMT_VERSION,common.run_bmt_cmd,"{'cmd_key':'GET_VERSION', 'parse_pattern':'BoseManufacturingTool BMT:\s*(\w+.\w+.\w+-\w+\+\w+)'}",,5000,,5.1.0-1286+e381751,5.1.0-1286+e381751,,,,BMT
+,Fixture,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+,LED_TEST,POWER,POWER_CYCLE,common.powerCycle,,,15000,,--PASS--,--PASS--,,,,
+,LED_CASE_BLUE,RUN_BMT,@SET_LED_CASE_BLUE_ON,common.run_bmt_cmd,"{'cmd_key':'SET_LED_CASE_BLUE_ON', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.LEDs.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,PatternID=LED3 Priority=0,PatternID=LED3 Priority=0,,,,BMT
+,LED_CASE_BLUE,delay,delay1000ms,common.delay,1000,,5000,R,--PASS--,--PASS--,,,,
+,LED_CASE_BLUE,LED,@LED_TEST_BLUE,common.led_test,"{'color':'blue'}",[[CASE_BLUE]],10000,,,,,,,LED Module
+,LED_CASE_BLUE,CASE_BLUE_R,@CASE_BLUE_R,common.getValueForLED,[[[CASE_BLUE]]],,5000,,1,25,,,,
+,LED_CASE_BLUE,CASE_BLUE_G,@CASE_BLUE_G,common.getValueForLED,[[[CASE_BLUE]]],,5000,,10,40,,,,
+,LED_CASE_BLUE,CASE_BLUE_B,@CASE_BLUE_B,common.getValueForLED,[[[CASE_BLUE]]],,5000,,250,255,,,,
+,LED_CASE_BLUE,CASE_BLUE_LUX,@CASE_BLUE_I,common.getValueForLED,[[[CASE_BLUE]]],,5000,,,,,,,
+
+,LED_TEST,RUN_BMT,@SET_LED_CASE_WHITE_ON,common.run_bmt_cmd,"{'cmd_key':'SET_LED_CASE_WHITE_ON', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.LEDs.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,PatternID=LED1 Priority=0,PatternID=LED1 Priority=0,,,,BMT
+,LED_TEST,delay,delay1000ms,common.delay,1000,,5000,R,--PASS--,--PASS--,,,,
+,LED_CASE_WHITE,LED,@LED_TEST_WHITE,common.led_test,"{'color':'white'}",[[CASE_WHITE]],10000,,,,,,,LED Module
+,LED_CASE_WHITE,CASE_WHITE_R,@CASE_WHITE_R,common.getValueForLED,[[[CASE_WHITE]]],,5000,,90,255,,,,
+,LED_CASE_WHITE,CASE_WHITE_G,@CASE_WHITE_G,common.getValueForLED,[[[CASE_WHITE]]],,5000,,90,255,,,,
+,LED_CASE_WHITE,CASE_WHITE_B,@CASE_WHITE_B,common.getValueForLED,[[[CASE_WHITE]]],,5000,,250,255,,,,
+,LED_CASE_WHITE,CASE_WHITE_LUX,@CASE_WHITE_I,common.getValueForLED,[[[CASE_WHITE]]],,5000,,,,,,,
+
+,LED_CASE_AMBER,RUN_BMT,@SET_LED_CASE_AMBER_ON,common.run_bmt_cmd,"{'cmd_key':'SET_LED_CASE_AMBER_ON', 'cmd_args': [[[scanned_sn]]], 'parse_pattern':'Debug.LEDs.Status (\w+\=\w+ \w+\=\w+)'}",,5000,,PatternID=LED2 Priority=0,PatternID=LED2 Priority=0,,,,BMT
+,LED_CASE_AMBER,delay,delay1000ms,common.delay,1000,,5000,R,--PASS--,--PASS--,,,,
+,LED_CASE_AMBER,LED,@LED_TEST_AMBER,common.led_test,"{'color':'amber'}",[[CASE_AMBER]],10000,,,,,,,LED Module
+,LED_CASE_AMBER,CASE_AMBER_R,@CASE_AMBER_R,common.getValueForLED,[[[CASE_AMBER]]],,5000,,250,255,,,,
+,LED_CASE_AMBER,CASE_AMBER_G,@CASE_AMBER_G,common.getValueForLED,[[[CASE_AMBER]]],,5000,,45,235,,,,
+,LED_CASE_AMBER,CASE_AMBER_B,@CASE_AMBER_B,common.getValueForLED,[[[CASE_AMBER]]],,5000,,1,25,,,,
+,LED_CASE_AMBER,CASE_AMBER_LUX,@CASE_AMBER_I,common.getValueForLED,[[[CASE_AMBER]]],,5000,,,,,,,
+
+
+,TEARDOWN,reset,resetAll,common.rpc_call,"{'func':'mixdevice.reset', 'args':[]}",,5000,,,,,,,
+
+
+
+
+
+
+
+
+
+
