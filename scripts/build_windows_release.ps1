@@ -68,6 +68,12 @@ try {
   & $Python -m pip install --upgrade pip | Out-Null
   & $Python -m pip install -r ".\requirements-build.txt"
 
+  $sitePkgs = Join-Path $release "site-packages"
+  if (Test-Path -LiteralPath $sitePkgs) {
+    $env:PYTHONPATH = "$sitePkgs;$env:PYTHONPATH"
+    Write-Host "PYTHONPATH includes: $sitePkgs"
+  }
+
   & $Python -m PyInstaller ".\src\spec\Tester_windows.spec"
 
   Ensure-Dir ".\dist\configure"
@@ -78,11 +84,11 @@ try {
   Copy-Item (Join-Path $engine "*") ".\dist\engine\" -Recurse -Force
   Copy-Item (Join-Path $engine "profile\*.csv") ".\dist\profile\" -Force -ErrorAction SilentlyContinue
 
-  & ".\src\signer\signer_win.exe" -d ".\dist"
-
   Move-Item ".\dist" ".\OSENSTester"
   Copy-Item ".\killport.bat" ".\OSENSTester\" -Force
-  Copy-Item ".\__init__.py" ".\OSENSTester\" -Force
+  if (Test-Path -LiteralPath ".\__init__.py") {
+    Copy-Item ".\__init__.py" ".\OSENSTester\" -Force
+  }
 }
 finally {
   Pop-Location
@@ -97,6 +103,11 @@ Copy-Item (Join-Path $common "OSENSTester") $releaseOsens -Recurse -Force
 if (Test-Path -LiteralPath (Join-Path $common "OSENSTester")) {
   Remove-Item -Recurse -Force (Join-Path $common "OSENSTester")
 }
+
+# Sign the actual release payload after it lands in code_Release_CaseFCT.
+$payloadSigner = Join-Path $common "src\\signer\\signer_win.exe"
+& $payloadSigner -d $releaseOsens
+if (-not $?) { throw "signer_win.exe failed signing release OSENSTester (exit=$LASTEXITCODE)" }
 
 #
 # Step 2: Sync Overlay sources into release dir Overlay/

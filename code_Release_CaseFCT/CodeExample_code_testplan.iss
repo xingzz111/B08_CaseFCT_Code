@@ -28,6 +28,8 @@ Source: "SmartVisionTool Setup 3.0.2-3.323.2.exe"; DestDir: "D:\Driver"; Flags: 
 Source: "Overlay\*"; DestDir: "D:\Overlay"; Flags: recursesubdirs
 Source: "Calibration_Tool\*"; DestDir: "D:\Calibration_Tool"; Flags: recursesubdirs
 Source: "OSENSTester\*"; DestDir: "D:\OSENSTester"; Flags: recursesubdirs
+; 将整个 site-packages 安装到 C 盘固定路径（供 Python/工具链使用）
+Source: "site-packages\*"; DestDir: "C:\Python\Lib\site-packages"; Flags: recursesubdirs
 Source: "testerconfig\*"; DestDir: "{%USERPROFILE}\testerconfig"; Flags: recursesubdirs
 
 [Run]
