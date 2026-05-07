@@ -2,7 +2,9 @@ param(
   [string]$RepoRoot = (Resolve-Path ".").Path,
   [string]$Python = "python",
   [string]$ReleaseDir = "code_Release_CaseFCT",
-  [string]$Version = ""
+  [string]$Version = "",
+  [switch]$SkipPyInstaller,
+  [string]$PrebuiltExe = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -55,9 +57,10 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
 Write-Host "RepoRoot: $repo"
 Write-Host "ReleaseDir: $release"
 Write-Host "Version: $Version"
+if ($SkipPyInstaller) { Write-Host "Mode: SkipPyInstaller (prebuilt UI exe + sign/package only)" }
 
 #
-# Step 1: Build OSENSTester (PyInstaller)
+# Step 1: Build OSENSTester (PyInstaller) or package prebuilt exe
 #
 Push-Location $common
 try {
@@ -65,16 +68,41 @@ try {
   if (Test-Path -LiteralPath ".\build") { Remove-Item -Recurse -Force ".\build" }
   if (Test-Path -LiteralPath ".\OSENSTester") { Remove-Item -Recurse -Force ".\OSENSTester" }
 
-  & $Python -m pip install --upgrade pip | Out-Null
-  & $Python -m pip install -r ".\requirements-build.txt"
+  if (-not $SkipPyInstaller) {
+    & $Python -m pip install --upgrade pip | Out-Null
+    & $Python -m pip install -r ".\requirements-build.txt"
 
-  $sitePkgs = Join-Path $release "site-packages"
-  if (Test-Path -LiteralPath $sitePkgs) {
-    $env:PYTHONPATH = "$sitePkgs;$env:PYTHONPATH"
-    Write-Host "PYTHONPATH includes: $sitePkgs"
+    $sitePkgs = Join-Path $release "site-packages"
+    if (Test-Path -LiteralPath $sitePkgs) {
+      $env:PYTHONPATH = "$sitePkgs;$env:PYTHONPATH"
+      Write-Host "PYTHONPATH includes: $sitePkgs"
+    }
+
+    & $Python -m PyInstaller ".\src\spec\Tester_windows.spec"
   }
-
-  & $Python -m PyInstaller ".\src\spec\Tester_windows.spec"
+  else {
+    $srcExe = $PrebuiltExe
+    if ([string]::IsNullOrWhiteSpace($srcExe)) {
+      $candidates = @(
+        (Join-Path $common "UI.exe"),
+        (Join-Path $common "OSENSTester.exe"),
+        (Join-Path $release "Overlay\OSENSTester.exe"),
+        (Join-Path $release "Overlay\CommonPlatform\UI.exe")
+      )
+      foreach ($c in $candidates) {
+        if (Test-Path -LiteralPath $c) {
+          $srcExe = $c
+          break
+        }
+      }
+    }
+    if ([string]::IsNullOrWhiteSpace($srcExe) -or !(Test-Path -LiteralPath $srcExe)) {
+      throw "SkipPyInstaller: missing prebuilt exe. Commit one of: CommonPlatform/UI.exe, Overlay/OSENSTester.exe under ReleaseDir, or pass -PrebuiltExe"
+    }
+    Write-Host "Using prebuilt exe: $srcExe"
+    Ensure-Dir ".\dist"
+    Copy-Item -LiteralPath $srcExe ".\dist\OSENSTester.exe" -Force
+  }
 
   Ensure-Dir ".\dist\configure"
   Ensure-Dir ".\dist\profile"

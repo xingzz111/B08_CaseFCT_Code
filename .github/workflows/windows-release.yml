@@ -2,6 +2,17 @@ name: Windows Release (OSENSTester)
 
 on:
   workflow_dispatch:
+    inputs:
+      package_only:
+        description: "Skip PyInstaller; copy prebuilt UI exe, bundle engine/configure, sign, build installer."
+        required: false
+        type: boolean
+        default: false
+      installer_version:
+        description: 'Installer/App version passed to Inno (e.g. 1.2.3). If empty on manual run, github.ref_name is used after stripping leading "v".'
+        required: false
+        type: string
+        default: ""
   push:
     tags:
       - "v*"
@@ -20,6 +31,7 @@ jobs:
           lfs: true
 
       - name: Setup Python
+        if: ${{ !((github.event_name == 'workflow_dispatch' && github.event.inputs.package_only == 'true') || (github.event_name == 'push' && contains(github.ref_name, '-pkg'))) }}
         uses: actions/setup-python@v5
         with:
           python-version: "3.9"
@@ -45,15 +57,40 @@ jobs:
       - name: Build OSENSTester + Installer
         shell: pwsh
         run: |
-          $tag = "${{ github.ref_name }}"
-          $ver = $tag.TrimStart("v")
-          ./scripts/build_windows_release.ps1 -Python python -ReleaseDir "code_Release_CaseFCT" -Version $ver
+          $verInput = "${{ inputs.installer_version }}"
+          if ([string]::IsNullOrWhiteSpace($verInput)) {
+            $ver = "${{ github.ref_name }}".TrimStart("v")
+          } else {
+            $ver = $verInput.Trim()
+          }
+
+          $tagName = "${{ github.ref_name }}"
+          $tagPackageOnly = ($env:GITHUB_EVENT_NAME -eq "push") -and ($tagName -like "v*") -and ($tagName -like "*-pkg*")
+
+          $packageOnly = ("${{ inputs.package_only }}" -eq "true") -or $tagPackageOnly
+          if ($packageOnly) { Write-Host "package_only=true: skipping PyInstaller" }
+
+          # If tag is like v0.0.8-pkg, use 0.0.8 for Inno/zip filenames.
+          if ($tagPackageOnly -and [string]::IsNullOrWhiteSpace($verInput)) {
+            $ver = ($ver -replace "-pkg.*$","")
+          }
+
+          $params = @{ Python = "python"; ReleaseDir = "code_Release_CaseFCT"; Version = $ver }
+          if ($packageOnly) { $params["SkipPyInstaller"] = $true }
+          & ./scripts/build_windows_release.ps1 @params
 
       - name: Create code release zip
         shell: pwsh
         run: |
-          $tag = "${{ github.ref_name }}"
-          $ver = $tag.TrimStart("v")
+          $verInput = "${{ inputs.installer_version }}"
+          if ([string]::IsNullOrWhiteSpace($verInput)) {
+            $ver = "${{ github.ref_name }}".TrimStart("v")
+          } else {
+            $ver = $verInput.Trim()
+          }
+          if (($env:GITHUB_EVENT_NAME -eq "push") -and ("${{ github.ref_name }}" -like "v*") -and ("${{ github.ref_name }}" -like "*-pkg*") -and [string]::IsNullOrWhiteSpace($verInput)) {
+            $ver = ($ver -replace "-pkg.*$","")
+          }
           $zip = "code_Release_CaseFCT_$ver.zip"
           if (Test-Path $zip) { Remove-Item $zip -Force }
           Compress-Archive -Path "code_Release_CaseFCT\*" -DestinationPath $zip -CompressionLevel Optimal
