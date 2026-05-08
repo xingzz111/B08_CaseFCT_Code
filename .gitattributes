@@ -2,4 +2,5 @@ CommonPlatform/src/BMT.log filter=lfs diff=lfs merge=lfs -text
 code_Release_CaseFCT/site-packages/** filter=lfs diff=lfs merge=lfs -text
 code_Release_CaseFCT/site-packages/PySide6/Qt6WebEngineCore.dll filter=lfs diff=lfs merge=lfs -text
 code_Release_CaseFCT/Overlay/CommonPlatform/src/BMT.log filter=lfs diff=lfs merge=lfs -text
+code_Release_CaseFCT/Overlay/OSENSTester.exe filter=lfs diff=lfs merge=lfs -text
 code_Release_CaseFCT/SmartVisionTool[[:space:]]Setup[[:space:]]3.0.2-3.323.2.exe filter=lfs diff=lfs merge=lfs -text
