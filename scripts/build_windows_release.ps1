@@ -152,6 +152,16 @@ Push-Location $release
 try {
   Ensure-Dir ".\Output"
   & iscc.exe "/DMyAppVersion=$Version" ".\CodeExample_code_testplan.iss"
+
+  # Sign installer output so the release package has a fresh encrypted.sig too.
+  $signer = Join-Path $common "src\\signer\\signer_win.exe"
+  if (Test-Path -LiteralPath $signer) {
+    & $signer -d ".\\Output"
+    if (-not $?) { throw "signer_win.exe failed signing installer Output (exit=$LASTEXITCODE)" }
+  }
+  else {
+    Write-Warning "signer_win.exe not found at $signer (skipping installer Output signing)"
+  }
 }
 finally {
   Pop-Location
