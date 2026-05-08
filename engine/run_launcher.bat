@@ -5,8 +5,6 @@ echo "---------------------------------Starting---------------------------------
 set basepath=%~dp0
 echo current path: %basepath%
 set PYTHONPATH=%basepath:~0, -8%
-REM Prefer dependencies installed by the release installer.
-set PYTHONPATH=C:\Python\Lib\site-packages;%PYTHONPATH%
 
 set launcher=C:\Python\Lib\site-packages\rtSque\lynx\launcher
 
